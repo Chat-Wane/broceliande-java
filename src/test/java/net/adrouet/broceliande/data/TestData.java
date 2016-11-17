@@ -1,6 +1,7 @@
 package net.adrouet.broceliande.data;
 
 public class TestData {
+
         private String sex;
         private int age;
         private boolean result;
@@ -11,6 +12,7 @@ public class TestData {
             this.result = result;
         }
 
+        @Feature
         public String getSex() {
             return sex;
         }
@@ -19,6 +21,7 @@ public class TestData {
             this.sex = sex;
         }
 
+        @Feature
         public int getAge() {
             return age;
         }
@@ -27,6 +30,7 @@ public class TestData {
             this.age = age;
         }
 
+        @Target
         public boolean isResult() {
             return result;
         }

@@ -17,7 +17,7 @@ public class InspectionUtilsTest {
 
         assertEquals(3, features.size());
 
-        Method getSexMethod = features.get("sex");
+        Method getSexMethod = features.get("gender");
         assertNotNull(getSexMethod);
         assertEquals(String.class, getSexMethod.getReturnType());
         assertEquals("M", getSexMethod.invoke(test));

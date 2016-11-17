@@ -1,22 +1,22 @@
 package net.adrouet.broceliande.data;
 
 public class TestData {
-        private String sex;
+        private String gender;
         private int age;
         private boolean result;
 
         public TestData(String sex, int age, boolean result) {
-            this.sex = sex;
+            this.gender = sex;
             this.age = age;
             this.result = result;
         }
 
         public String getSex() {
-            return sex;
+            return gender;
         }
 
         public void setSex(String sex) {
-            this.sex = sex;
+            this.gender = sex;
         }
 
         public int getAge() {

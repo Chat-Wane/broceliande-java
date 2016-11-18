@@ -39,6 +39,13 @@ public class Occurrences {
 		--this.total;
 	}
 
+	public void reset() {
+		for (int i = 0; i < this.occurrences.size(); ++i) {
+			this.occurrences.set(i, new Integer(0));
+		}
+		this.total = 0;
+	}
+
 	public ArrayList<Integer> getOccurrences() {
 		return occurrences;
 	}

@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.adrouet.broceliande.data.Feature;
+import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.struct.IData;
 import net.adrouet.broceliande.struct.IDataSet;
 import net.adrouet.broceliande.struct.Occurrences;
@@ -97,8 +99,13 @@ public class Splitter {
 			++i;
 			if (i < N_t) {
 				try {
-					// v'_k: the mid-cut point between v_k and v_k+1
-					Double vPrime_kplus1 = average((Number) X_j.invoke(L_t.get(i)), (Number) X_j.invoke(L_t.get(i - 1)));
+					if (X_j.getAnnotation(Feature.class).equals(FeatureType.CATEGORICAL)) {
+
+					} else {
+						// v'_k: the mid-cut point between v_k and v_k+1
+						Double vPrime_kplus1 = average((Number) X_j.invoke(L_t.get(i)),
+								(Number) X_j.invoke(L_t.get(i - 1)));
+					}
 					// ∆i(s, t): the impurity decrease of split s at node t
 					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
 					Double p_L = occ_L.getTotal() / ((double) L_t.size());
@@ -122,8 +129,8 @@ public class Splitter {
 		return vstar_j;
 	}
 
-	private static Double average(Number a, Number b){
-		return (a.doubleValue()+b.doubleValue())/2;
+	private static Double average(Number a, Number b) {
+		return (a.doubleValue() + b.doubleValue()) / 2;
 	}
 
 	private static Double impurityG(List<Integer> N_cts, Integer N_t) {

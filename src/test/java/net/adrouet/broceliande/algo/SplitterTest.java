@@ -25,7 +25,12 @@ public class SplitterTest {
         TestDataSet testDataSet = new TestDataSet(datas);
 
         BestSplit bestSplit = Splitter.findBestSplit(testDataSet);
-        assertEquals(3.5, bestSplit.getMidCut(),0.001);
+        assertTrue(bestSplit.getCutPoint().test(datas.get(0)));
+        assertTrue(bestSplit.getCutPoint().test(datas.get(1)));
+        assertTrue(bestSplit.getCutPoint().test(datas.get(2)));
+        assertFalse(bestSplit.getCutPoint().test(datas.get(3)));
+        assertFalse(bestSplit.getCutPoint().test(datas.get(4)));
+        assertFalse(bestSplit.getCutPoint().test(datas.get(5)));
         assertEquals(TestData.class.getMethod("getAge"), bestSplit.getFeature());
     }
 

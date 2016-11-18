@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.adrouet.broceliande.data.Feature;
 import net.adrouet.broceliande.data.FeatureType;
@@ -20,7 +21,7 @@ public class Splitter {
 	}
 
 	public static BestSplit findBestSplit(IDataSet dataSet, Integer K) {
-		BestSplit sstar = new BestSplit(null, Double.NEGATIVE_INFINITY, 0.);
+		BestSplit sstar = new BestSplit(null, null, 0.);
 		Double delta = Double.NEGATIVE_INFINITY;
 		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
 		// #1 draw random getters from the features
@@ -48,7 +49,7 @@ public class Splitter {
 	 * @see page 50 of LOUPPE's thesis about random forests
 	 */
 	public static BestSplit findBestSplit(IDataSet dataSet, Method X_j) {
-		BestSplit vstar_j = new BestSplit(X_j, Double.NEGATIVE_INFINITY, 0.);
+		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
 		Double delta = 0.;
 
 		// #1 initialize the statistics for t_R to i(t)
@@ -68,20 +69,17 @@ public class Splitter {
 		Double it = impurityG(occ_R.getOccurrences(), dataSet.getL_t().size());
 
 		// #4 sort the sample L_t using the comparator on X_j returned values
-		Comparator<IData> comparator = new Comparator<IData>() {
-			@Override
-			public int compare(IData x1, IData x2) {
-				try {
-					Comparable x1j = (Comparable) X_j.invoke(x1);
-					Comparable x2j = (Comparable) X_j.invoke(x2);
-					return x1j.compareTo(x2j);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return 0;
-			}
-		};
+		Comparator<IData> comparator = (x1, x2) -> {
+            try {
+                Comparable x1j = (Comparable) X_j.invoke(x1);
+                Comparable x2j = (Comparable) X_j.invoke(x2);
+                return x1j.compareTo(x2j);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return 0;
+        };
 		Collections.sort(dataSet.getL_t(), comparator);
 
 		// #5 loop over the sample of t
@@ -115,7 +113,15 @@ public class Splitter {
 
 					if (delta_iOfv_kplus1 > delta) {
 						delta = delta_iOfv_kplus1;
-						vstar_j = new BestSplit(X_j, vPrime_kplus1, delta_iOfv_kplus1);
+						Predicate<IData> p = d -> {
+                            try {
+                                return ((Number)X_j.invoke(d)).doubleValue() < vPrime_kplus1;
+                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                                throw new RuntimeException("Getter on ordered feature not returning Number");
+                            }
+                        };
+
+						vstar_j = new BestSplit(X_j, p, delta_iOfv_kplus1);
 					}
 
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

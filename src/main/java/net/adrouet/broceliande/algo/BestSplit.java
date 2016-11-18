@@ -1,17 +1,20 @@
 package net.adrouet.broceliande.algo;
 
+import net.adrouet.broceliande.struct.IData;
+
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
 public class BestSplit {
 
 	private final Method feature; // getter; X_t
-	private final Double midCut; // mid cut point; v'_k
+	private final Predicate<IData> cutPoint; // mid cut point; v'_k
 	private final Double impurityDecrease; // maximum impurity decrease on X_t
 											// ∆i(s, t)
 
-	public BestSplit(Method feature, Double midCut, Double impurityDecrease) {
+	public BestSplit(Method feature, Predicate<IData> cutPoint, Double impurityDecrease) {
 		this.feature = feature;
-		this.midCut = midCut;
+		this.cutPoint = cutPoint;
 		this.impurityDecrease = impurityDecrease;
 	}
 
@@ -19,8 +22,8 @@ public class BestSplit {
 		return feature;
 	}
 
-	public Double getMidCut() {
-		return midCut;
+	public Predicate<IData> getCutPoint() {
+		return cutPoint;
 	}
 
 	public Double getImpurityDecrease() {

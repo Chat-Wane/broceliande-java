@@ -2,6 +2,7 @@ package net.adrouet.broceliande.algo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -12,12 +13,29 @@ import net.adrouet.broceliande.struct.Occurrences;
 
 public class Splitter {
 
-	public void findBestSplit(IDataSet dataSet) {
-		Double delta = Double.NEGATIVE_INFINITY;
-		for (Method p : dataSet.getP()) {
-			// #1 find the best binary split s*_j defined on X_j
+	public static BestSplit findBestSplit(IDataSet dataSet) {
+		return Splitter.findBestSplit(dataSet, dataSet.getP().size());
+	}
 
+	public static BestSplit findBestSplit(IDataSet dataSet, Integer K) {
+		BestSplit sstar = new BestSplit(null, Double.NEGATIVE_INFINITY, 0.);
+		Double delta = Double.NEGATIVE_INFINITY;
+		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
+		// #1 draw random getters from the features
+		while (randomP.size() > K) {
+			Collections.shuffle(randomP);
+			randomP.remove(randomP.size() - 1);
 		}
+		for (Method X_j : randomP) {
+			// #1 find the best binary split s*_j defined on X_j
+			BestSplit splitX_j = Splitter.findBestSplit(dataSet, X_j);
+			if (splitX_j.getImpurityDecrease() > delta) {
+				delta = splitX_j.getImpurityDecrease();
+				sstar = splitX_j;
+			}
+		}
+
+		return sstar;
 	}
 
 	/**

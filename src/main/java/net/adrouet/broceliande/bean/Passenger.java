@@ -1,6 +1,7 @@
 package net.adrouet.broceliande.bean;
 
 import net.adrouet.broceliande.data.Feature;
+import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.data.Target;
 
 public class Passenger {
@@ -36,7 +37,7 @@ public class Passenger {
         this.survived = survived;
     }
 
-    @Feature
+    @Feature(FeatureType.ORDERED)
     public Integer getPclass() {
         return pclass;
     }
@@ -53,7 +54,7 @@ public class Passenger {
         this.name = name;
     }
 
-    @Feature
+    @Feature(FeatureType.CATEGORICAL)
     public String getSex() {
         return sex;
     }
@@ -62,7 +63,7 @@ public class Passenger {
         this.sex = sex;
     }
 
-    @Feature
+    @Feature(FeatureType.ORDERED)
     public Integer getAge() {
         return age;
     }
@@ -71,7 +72,7 @@ public class Passenger {
         this.age = age;
     }
 
-    @Feature
+    @Feature(FeatureType.ORDERED)
     public Integer getSibSp() {
         return sibSp;
     }
@@ -80,7 +81,7 @@ public class Passenger {
         this.sibSp = sibSp;
     }
 
-    @Feature
+    @Feature(FeatureType.ORDERED)
     public Integer getParch() {
         return parch;
     }
@@ -113,7 +114,7 @@ public class Passenger {
         this.cabin = cabin;
     }
 
-    @Feature
+    @Feature(FeatureType.CATEGORICAL)
     public String getEmbarked() {
         return embarked;
     }

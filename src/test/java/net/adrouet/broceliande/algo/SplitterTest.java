@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class SplitterTest {
 
     @Test
-    public void findBestSplitSimple() throws Exception {
+    public void findBestSplitSimpleOrdered() throws Exception {
         List<IData> datas = new ArrayList<>();
         datas.add(new TestData("M",1,"YES"));
         datas.add(new TestData("M",2,"YES"));
@@ -27,6 +27,21 @@ public class SplitterTest {
         BestSplit bestSplit = Splitter.findBestSplit(testDataSet);
         assertEquals(3.5, bestSplit.getMidCut(),0.001);
         assertEquals(TestData.class.getMethod("getAge"), bestSplit.getFeature());
+    }
+
+    @Test
+    public void findBestSplitSimpleCategorical() throws Exception {
+        List<IData> datas = new ArrayList<>();
+        datas.add(new TestData("M",1,"YES"));
+        datas.add(new TestData("M",1,"YES"));
+        datas.add(new TestData("M",1,"YES"));
+        datas.add(new TestData("F",1,"NO"));
+        datas.add(new TestData("F",1,"NO"));
+        datas.add(new TestData("F",1,"NO"));
+
+        TestDataSet testDataSet = new TestDataSet(datas);
+
+        BestSplit bestSplit = Splitter.findBestSplit(testDataSet);
     }
 
 }

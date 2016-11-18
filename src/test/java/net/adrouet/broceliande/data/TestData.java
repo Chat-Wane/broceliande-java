@@ -14,7 +14,7 @@ public class TestData implements IData{
             this.result = result;
         }
 
-        @Feature
+        @Feature(FeatureType.CATEGORICAL)
         public String getGender() {
             return gender;
         }
@@ -23,7 +23,7 @@ public class TestData implements IData{
             this.gender = sex;
         }
 
-        @Feature
+        @Feature(FeatureType.ORDERED)
         public Integer getAge() {
             return age;
         }

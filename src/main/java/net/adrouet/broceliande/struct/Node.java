@@ -1,32 +1,35 @@
 package net.adrouet.broceliande.struct;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class Node<T, U> {
 
     private String label;
 
-    private List<Node> children;
+    private Node<T, U> left;
+
+    private Node<T, U> right;
 
     private Predicate<T> predicate;
 
     private U result;
 
-    public Node(){
+    private float impurity;
+
+    public Node() {
         this.predicate = (T t) -> false;
-        this.children = new ArrayList<>();
     }
 
-    public Node <T, U> getChild(T data){
-        return children.stream()
-                .filter(c -> c.predicate.test(data))
-                .findFirst()
-                .orElse(null);
+    public Node<T, U> getChild(T data) {
+        if (left.getPredicate().test(data)) {
+            return left;
+        } else if (right.getPredicate().test(data)) {
+            return right;
+        }
+        return null;
     }
 
-    public boolean isLeaf(){
+    public boolean isLeaf() {
         return result != null;
     }
 
@@ -38,12 +41,20 @@ public class Node<T, U> {
         this.label = label;
     }
 
-    public List<Node> getChildren() {
-        return children;
+    public Node<T, U> getLeft() {
+        return left;
     }
 
-    public void setChildren(List<Node> children) {
-        this.children = children;
+    public void setLeft(Node<T, U> left) {
+        this.left = left;
+    }
+
+    public Node<T, U> getRight() {
+        return right;
+    }
+
+    public void setRight(Node<T, U> right) {
+        this.right = right;
     }
 
     public Predicate<T> getPredicate() {
@@ -60,5 +71,13 @@ public class Node<T, U> {
 
     public void setResult(U result) {
         this.result = result;
+    }
+
+    public float getImpurity() {
+        return impurity;
+    }
+
+    public void setImpurity(float impurity) {
+        this.impurity = impurity;
     }
 }

@@ -21,12 +21,12 @@ public class NodeTest {
 
         child.setPredicate(isMale);
         child.setResult(true);
-        root.getChildren().add(child);
+        root.setLeft(child);
 
         child = new Node<>();
         child.setResult(false);
         child.setPredicate(isFemale);
-        root.getChildren().add(child);
+        root.setRight(child);
 
         assertTrue(root.getChild(new TestData("M",12,true)).getResult());
         assertFalse(root.getChild(new TestData("F",12,true)).getResult());

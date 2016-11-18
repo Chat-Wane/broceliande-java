@@ -13,22 +13,22 @@ public class NodeTest {
 
     @Test
     public void testNodeTransition(){
-        Node<TestData, Boolean> root = new Node<>();
-        Node<TestData, Boolean> child = new Node<>();
+        Node<TestData, String> root = new Node<>();
+        Node<TestData, String> child = new Node<>();
 
-        Predicate<TestData> isMale = t-> t.getSex().equals("M");
+        Predicate<TestData> isMale = t-> t.getGender().equals("M");
         Predicate<TestData> isFemale = isMale.negate();
 
         child.setPredicate(isMale);
-        child.setResult(true);
+        child.setResult("YES");
         root.setLeft(child);
 
         child = new Node<>();
-        child.setResult(false);
+        child.setResult("NO");
         child.setPredicate(isFemale);
         root.setRight(child);
 
-        assertTrue(root.getChild(new TestData("M",12,true)).getResult());
-        assertFalse(root.getChild(new TestData("F",12,true)).getResult());
+        assertEquals("YES",root.getChild(new TestData("M",12,"YES")).getResult());
+        assertEquals("NO",root.getChild(new TestData("F",12,"NO")).getResult());
     }
 }

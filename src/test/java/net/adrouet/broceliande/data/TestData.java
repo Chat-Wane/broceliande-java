@@ -1,41 +1,48 @@
 package net.adrouet.broceliande.data;
 
-public class TestData {
+import net.adrouet.broceliande.struct.IData;
+
+public class TestData implements IData{
 
         private String gender;
-        private int age;
-        private boolean result;
+        private Integer age;
+        private String result;
 
-        public TestData(String sex, int age, boolean result) {
-            this.sex = sex;
+        public TestData(String sex, Integer age, String result) {
+            this.gender = sex;
             this.age = age;
             this.result = result;
         }
 
         @Feature
-        public String getSex() {
+        public String getGender() {
             return gender;
         }
 
-        public void setSex(String sex) {
+        public void setGender(String sex) {
             this.gender = sex;
         }
 
         @Feature
-        public int getAge() {
+        public Integer getAge() {
             return age;
         }
 
-        public void setAge(int age) {
+        public void setAge(Integer age) {
             this.age = age;
         }
 
         @Target
-        public boolean isResult() {
+        public String isResult() {
             return result;
         }
 
-        public void setResult(boolean result) {
+        public void setResult(String result) {
             this.result = result;
         }
+
+    @Override
+    public Comparable getResult() {
+        return result;
     }
+}

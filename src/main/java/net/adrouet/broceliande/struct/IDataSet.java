@@ -20,4 +20,6 @@ public interface IDataSet {
 	 * @return the subset of node samples falling into node t
 	 */
 	List<IData> getL_t();
+
+	SubDataSets split();
 }

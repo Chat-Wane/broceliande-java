@@ -2,6 +2,7 @@ package net.adrouet.broceliande.data;
 
 import net.adrouet.broceliande.struct.IData;
 import net.adrouet.broceliande.struct.IDataSet;
+import net.adrouet.broceliande.struct.SubDataSets;
 import net.adrouet.broceliande.util.InspectionUtils;
 
 import java.beans.IntrospectionException;
@@ -38,5 +39,11 @@ public class TestDataSet implements IDataSet {
 	@Override
 	public List<IData> getL_t() {
 		return data;
+	}
+
+	@Override
+	public SubDataSets split() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

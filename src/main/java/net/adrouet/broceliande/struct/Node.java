@@ -1,32 +1,27 @@
 package net.adrouet.broceliande.struct;
 
-import java.util.function.Predicate;
+import net.adrouet.broceliande.algo.BestSplit;
 
-public class Node<T, U> {
+public class Node<U> {
 
 	private String label;
 
-	private Node<T, U> left;
+	private Node<U> left;
 
-	private Node<T, U> right;
-
-	private Predicate<T> predicate;
+	private Node<U> right;
 
 	private U result;
 
-	private float impurity;
+	private BestSplit split;
 
 	public Node() {
-		this.predicate = (T t) -> false;
 	}
 
-	public Node<T, U> getChild(T data) {
-		if (left.getPredicate().test(data)) {
+	public Node<U> getChild(IData data) {
+		if (this.split.getCutPoint().test(data)) {
 			return left;
-		} else if (right.getPredicate().test(data)) {
+		} else
 			return right;
-		}
-		return null;
 	}
 
 	public boolean isLeaf() {
@@ -41,28 +36,20 @@ public class Node<T, U> {
 		this.label = label;
 	}
 
-	public Node<T, U> getLeft() {
+	public Node<U> getLeft() {
 		return left;
 	}
 
-	public void setLeft(Node<T, U> left) {
+	public void setLeft(Node<U> left) {
 		this.left = left;
 	}
 
-	public Node<T, U> getRight() {
+	public Node<U> getRight() {
 		return right;
 	}
 
-	public void setRight(Node<T, U> right) {
+	public void setRight(Node<U> right) {
 		this.right = right;
-	}
-
-	public Predicate<T> getPredicate() {
-		return predicate;
-	}
-
-	public void setPredicate(Predicate<T> predicate) {
-		this.predicate = predicate;
 	}
 
 	public U getResult() {
@@ -73,11 +60,11 @@ public class Node<T, U> {
 		this.result = result;
 	}
 
-	public float getImpurity() {
-		return impurity;
+	public void setSplit(BestSplit split) {
+		this.split = split;
 	}
-
-	public void setImpurity(float impurity) {
-		this.impurity = impurity;
+	
+	public BestSplit getSplit() {
+		return split;
 	}
 }

@@ -1,5 +1,11 @@
 package net.adrouet.broceliande.algo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +14,6 @@ import org.junit.Test;
 import net.adrouet.broceliande.data.TestData;
 import net.adrouet.broceliande.data.TestDataSet;
 import net.adrouet.broceliande.struct.IData;
-
-import static org.junit.Assert.*;
 
 public class SplitterTest {
 
@@ -22,7 +26,9 @@ public class SplitterTest {
 		List<IData> datasCopy = new ArrayList<>(datas);
 		TestDataSet testDataSet = new TestDataSet(datasCopy);
 
-		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
+		Splitter splitter = new Splitter();
+
+		BestSplit bestSplit = splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
 
 		assertTrue(bestSplit.getCutPoint().test(datas.get(0)));
 		assertFalse(bestSplit.getCutPoint().test(datas.get(1)));
@@ -37,7 +43,9 @@ public class SplitterTest {
 
 		TestDataSet testDataSet = new TestDataSet(datas);
 
-		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
+		Splitter splitter = new Splitter();
+
+		BestSplit bestSplit = splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
 
 		assertNull(bestSplit.getCutPoint());
 	}
@@ -51,17 +59,18 @@ public class SplitterTest {
 		List<IData> datasCopy = new ArrayList<>(datas);
 		TestDataSet testDataSet = new TestDataSet(datasCopy);
 
-		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
+		Splitter splitter = new Splitter();
 
-		assertNotEquals(bestSplit.getCutPoint().test(datas.get(0)),
-				bestSplit.getCutPoint().test(datas.get(1)));
+		BestSplit bestSplit = splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
+
+		assertNotEquals(bestSplit.getCutPoint().test(datas.get(0)), bestSplit.getCutPoint().test(datas.get(1)));
 		assertEquals(TestData.class.getMethod("getGender"), bestSplit.getFeature());
 
 		datas.add(new TestData("F", 1, "YES"));
 		datas.add(new TestData("F", 1, "NO"));
 		testDataSet = new TestDataSet(datasCopy);
 
-		bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
+		bestSplit = splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
 
 		assertTrue(bestSplit.getCutPoint().test(datas.get(0)));
 		assertFalse(bestSplit.getCutPoint().test(datas.get(1)));
@@ -78,7 +87,9 @@ public class SplitterTest {
 
 		TestDataSet testDataSet = new TestDataSet(datas);
 
-		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
+		Splitter splitter = new Splitter();
+
+		BestSplit bestSplit = splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
 
 		assertNull(bestSplit.getCutPoint());
 	}
@@ -93,7 +104,9 @@ public class SplitterTest {
 		List<IData> datasCopy = new ArrayList<>(datas);
 		TestDataSet testDataSet = new TestDataSet(datasCopy);
 
-		BestSplit bestSplit = Splitter.findBestSplit(testDataSet);
+		Splitter splitter = new Splitter();
+
+		BestSplit bestSplit = splitter.findBestSplit(testDataSet);
 
 		assertEquals(TestData.class.getMethod("getGender"), bestSplit.getFeature());
 
@@ -104,7 +117,7 @@ public class SplitterTest {
 		datasCopy = new ArrayList<>(datas);
 		testDataSet = new TestDataSet(datasCopy);
 
-		bestSplit = Splitter.findBestSplit(testDataSet);
+		bestSplit = splitter.findBestSplit(testDataSet);
 
 		assertEquals(TestData.class.getMethod("getAge"), bestSplit.getFeature());
 	}

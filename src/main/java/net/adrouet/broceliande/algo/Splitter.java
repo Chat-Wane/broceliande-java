@@ -16,22 +16,35 @@ import net.adrouet.broceliande.util.InspectionUtils;
 
 public class Splitter {
 
-	public static BestSplit findBestSplit(IDataSet dataSet) {
-		return Splitter.findBestSplit(dataSet, dataSet.getP().size());
+	private final Integer k;
+
+	public Splitter() {
+		this.k = null;
 	}
 
-	public static BestSplit findBestSplit(IDataSet dataSet, Integer K) {
+	public Splitter(Integer k) {
+		this.k = k;
+	}
+
+	public BestSplit findBestSplit(IDataSet dataSet) {
+		Integer k = 1;
+		if (this.k == null) {
+			k = dataSet.getP().size();
+		} else {
+			k = this.k;
+		}
+
 		BestSplit sstar = new BestSplit(null, null, 0.);
 		Double delta = Double.NEGATIVE_INFINITY;
 		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
 		// #1 draw random getters from the features
-		while (randomP.size() > K) {
+		while (randomP.size() > k) {
 			Collections.shuffle(randomP);
 			randomP.remove(randomP.size() - 1);
 		}
 		for (Method X_j : randomP) {
 			// #1 find the best binary split s*_j defined on X_j
-			BestSplit splitX_j = Splitter.findBestSplit(dataSet, X_j);
+			BestSplit splitX_j = this.findBestSplit(dataSet, X_j);
 			if (splitX_j.getImpurityDecrease() > delta) {
 				delta = splitX_j.getImpurityDecrease();
 				sstar = splitX_j;
@@ -44,10 +57,12 @@ public class Splitter {
 	/**
 	 * See page 50 of LOUPPE's thesis about random forests
 	 *
-	 * @param dataSet the subset of node samples falling into node t (contains L_t)
-	 * @param X_j     the j-th input variable or feature (getter)
+	 * @param dataSet
+	 *            the subset of node samples falling into node t (contains L_t)
+	 * @param X_j
+	 *            the j-th input variable or feature (getter)
 	 */
-	public static BestSplit findBestSplit(IDataSet dataSet, Method X_j) {
+	public BestSplit findBestSplit(IDataSet dataSet, Method X_j) {
 		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
 		Double delta = 0.;
 

@@ -28,6 +28,17 @@ public class Occurrences {
 		++this.total;
 	}
 
+	public void addFrom(Occurrences o) {
+		for (int i = 0; i < o.getTargets().size(); ++i) {
+			for (int j = 0; j < this.getTargets().size(); ++j) {
+				if (o.getTargets().get(i).compareTo(this.getTargets().get(j)) == 0) {
+					this.occurrences.set(j, this.occurrences.get(j) + o.getOccurrences().get(i));
+				}
+			}
+		}
+		this.total += o.getTotal();
+	}
+
 	public void remove(IData x) {
 		int i = 0;
 		for (Comparable target : this.targets) {
@@ -52,5 +63,9 @@ public class Occurrences {
 
 	public Integer getTotal() {
 		return total;
+	}
+
+	public ArrayList<Comparable> getTargets() {
+		return targets;
 	}
 }

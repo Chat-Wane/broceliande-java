@@ -13,17 +13,17 @@ import java.util.Set;
 
 public abstract class InspectionUtils {
 
-    public static <T> Set<Method> findFeatures(Class<T> t) throws IntrospectionException {
-        return new HashSet(Arrays.asList(MethodUtils.getMethodsWithAnnotation(t, Feature.class)));
-    }
+	public static <T> Set<Method> findFeatures(Class<T> t) throws IntrospectionException {
+		return new HashSet(Arrays.asList(MethodUtils.getMethodsWithAnnotation(t, Feature.class)));
+	}
 
-    public static <T> Method findTarget(Class<T> t) throws IntrospectionException {
-        return MethodUtils.getMethodsWithAnnotation(t, Target.class)[0];
-    }
+	public static <T> Method findTarget(Class<T> t) throws IntrospectionException {
+		return MethodUtils.getMethodsWithAnnotation(t, Target.class)[0];
+	}
 
-    public static FeatureType getFeatureType(Method m) {
-        Feature annotation = m.getAnnotation(Feature.class);
-        return annotation.value();
-    }
+	public static FeatureType getFeatureType(Method m) {
+		Feature annotation = m.getAnnotation(Feature.class);
+		return annotation.value();
+	}
 
 }

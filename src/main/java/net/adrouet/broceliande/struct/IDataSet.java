@@ -6,10 +6,18 @@ import java.util.Set;
 
 public interface IDataSet {
 
-	public Set<Comparable> getJ(); // J: set of possible results
+	/**
+	 * @return set of possible results
+	 */
+	Set<Comparable> getJ();
 
-	public Set<Method> getP(); // P: set of possible features (getters)
+	/**
+	 * @return set of possible features (getters)
+	 */
+	Set<Method> getP();
 
-	public List<IData> getL_t(); // L_t: the subset of node samples falling into
-									// node t
+	/**
+	 * @return the subset of node samples falling into node t
+	 */
+	List<IData> getL_t();
 }

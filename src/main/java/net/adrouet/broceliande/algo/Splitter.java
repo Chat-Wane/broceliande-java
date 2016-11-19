@@ -42,11 +42,10 @@ public class Splitter {
 	}
 
 	/**
-	 * @param dataSet
-	 *            the subset of node samples falling into node t (contains L_t)
-	 * @param X_j
-	 *            the j-th input variable or feature (getter)
-	 * @see page 50 of LOUPPE's thesis about random forests
+	 * See page 50 of LOUPPE's thesis about random forests
+	 *
+	 * @param dataSet the subset of node samples falling into node t (contains L_t)
+	 * @param X_j     the j-th input variable or feature (getter)
 	 */
 	public static BestSplit findBestSplit(IDataSet dataSet, Method X_j) {
 		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
@@ -95,7 +94,7 @@ public class Splitter {
 			occ_L.add(L_t.get(i));
 			occ_R.remove(L_t.get(i));
 			++i;
-			if (i < N_t || ((i==N_t) && InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL))) {
+			if (i < N_t || ((i == N_t) && InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL))) {
 				try {
 					// ∆i(s, t): the impurity decrease of split s at node t
 					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
@@ -107,9 +106,7 @@ public class Splitter {
 					Predicate<IData> p;
 					if (InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL)) {
 						Integer meow = i;
-						p = data -> {
-							return comparator.compare(data, L_t.get(meow)) == 0;
-						};
+						p = data -> comparator.compare(data, L_t.get(meow)) == 0;
 						occ_R.addFrom(occ_L);
 						occ_L.reset();
 					} else {
@@ -157,7 +154,7 @@ public class Splitter {
 	/**
 	 * (TODO) The impurity function i_R(t) based on the local resubstitution
 	 * estimate defined on the squared error loss
-	 * 
+	 *
 	 * @return
 	 */
 	private static Double impurityR() {
@@ -166,7 +163,7 @@ public class Splitter {
 
 	/**
 	 * (TODO) The impurity function i_H(t) based on the Shannon entropy
-	 * 
+	 *
 	 * @return
 	 */
 	private static Double impurityH() {

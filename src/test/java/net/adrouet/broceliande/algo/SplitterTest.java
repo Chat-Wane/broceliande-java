@@ -29,18 +29,18 @@ public class SplitterTest {
 		assertEquals(TestData.class.getMethod("getAge"), bestSplit.getFeature());
 	}
 
-    @Test
-    public void findBestSplitOrderedNoSplit() throws Exception {
-        List<IData> datas = new ArrayList<>();
-        datas.add(new TestData("M", 1, "YES"));
-        datas.add(new TestData("M", 1, "NO"));
+	@Test
+	public void findBestSplitOrderedNoSplit() throws Exception {
+		List<IData> datas = new ArrayList<>();
+		datas.add(new TestData("M", 1, "YES"));
+		datas.add(new TestData("M", 1, "NO"));
 
-        TestDataSet testDataSet = new TestDataSet(datas);
+		TestDataSet testDataSet = new TestDataSet(datas);
 
-        BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
+		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getAge"));
 
-        assertNull(bestSplit.getCutPoint());
-    }
+		assertNull(bestSplit.getCutPoint());
+	}
 
 	@Test
 	public void findBestSplitSimpleCategorical() throws Exception {
@@ -70,20 +70,20 @@ public class SplitterTest {
 		assertEquals(TestData.class.getMethod("getGender"), bestSplit.getFeature());
 	}
 
-    @Test
-    public void findBestSplitCategoricalNoSplit() throws Exception {
-        List<IData> datas = new ArrayList<>();
-        datas.add(new TestData("M", 1, "YES"));
-        datas.add(new TestData("M", 1, "NO"));
+	@Test
+	public void findBestSplitCategoricalNoSplit() throws Exception {
+		List<IData> datas = new ArrayList<>();
+		datas.add(new TestData("M", 1, "YES"));
+		datas.add(new TestData("M", 1, "NO"));
 
-        TestDataSet testDataSet = new TestDataSet(datas);
+		TestDataSet testDataSet = new TestDataSet(datas);
 
-        BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
+		BestSplit bestSplit = Splitter.findBestSplit(testDataSet, TestData.class.getMethod("getGender"));
 
-        assertNull(bestSplit.getCutPoint());
-    }
+		assertNull(bestSplit.getCutPoint());
+	}
 
-    @Test
+	@Test
 	public void findBestSplitFeatureChoice() throws Exception {
 		List<IData> datas = new ArrayList<>();
 		datas.add(new TestData("M", 1, "YES"));

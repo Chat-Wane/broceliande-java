@@ -12,31 +12,31 @@ import java.util.stream.Collectors;
 
 public class TestDataSet implements IDataSet {
 
-    private List<IData> data;
-    private Set<Comparable> j;
+	private List<IData> data;
+	private Set<Comparable> j;
 
-    public TestDataSet(List<IData> data) {
-        this.data = data;
-        j = data.stream().map(IData::getResult).distinct().collect(Collectors.toSet());
-    }
+	public TestDataSet(List<IData> data) {
+		this.data = data;
+		j = data.stream().map(IData::getResult).distinct().collect(Collectors.toSet());
+	}
 
-    @Override
-    public Set<Comparable> getJ() {
-        return j;
-    }
+	@Override
+	public Set<Comparable> getJ() {
+		return j;
+	}
 
-    @Override
-    public Set<Method> getP() {
-        try {
-            return InspectionUtils.findFeatures(TestData.class);
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+	@Override
+	public Set<Method> getP() {
+		try {
+			return InspectionUtils.findFeatures(TestData.class);
+		} catch (IntrospectionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-    @Override
-    public List<IData> getL_t() {
-        return data;
-    }
+	@Override
+	public List<IData> getL_t() {
+		return data;
+	}
 }

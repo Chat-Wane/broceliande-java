@@ -9,6 +9,7 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TestDataSet implements IDataSet {
@@ -38,12 +39,14 @@ public class TestDataSet implements IDataSet {
 
 	@Override
 	public List<IData> getL_t() {
-		return data;
-	}
-
-	@Override
-	public SubDataSets split() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public SubDataSets split(Predicate<IData> cut) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

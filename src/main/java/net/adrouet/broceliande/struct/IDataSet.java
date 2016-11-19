@@ -3,6 +3,7 @@ package net.adrouet.broceliande.struct;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public interface IDataSet {
 
@@ -21,5 +22,12 @@ public interface IDataSet {
 	 */
 	List<IData> getL_t();
 
-	SubDataSets split();
+	/**
+	 * split the dataset into two sub data sets depending on the cutting point
+	 * 
+	 * @param cut
+	 *            the cutting point
+	 * @return
+	 */
+	SubDataSets split(Predicate<IData> cut);
 }

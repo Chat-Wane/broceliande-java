@@ -40,4 +40,8 @@ public class BestSplit {
 		return impurityDecrease;
 	}
 
+	public boolean isSplit() {
+		return this.cutPoint != null;
+	}
+
 }

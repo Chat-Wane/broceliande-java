@@ -109,7 +109,7 @@ public class Splitter {
 			occ_L.add(L_t.get(i));
 			occ_R.remove(L_t.get(i));
 			++i;
-			if (i < N_t || ((i == N_t) && InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL))) {
+			if (i < N_t || ((i.equals(N_t)) && InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL))) {
 				try {
 					// ∆i(s, t): the impurity decrease of split s at node t
 					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)

@@ -29,11 +29,13 @@ public class DecisionTree {
 		BestSplit split;
 		while (!nodeToCompute.isEmpty()) {
 			n = nodeToCompute.poll();
-			// Set t as a terminal node if its depth is greater or equal to MaxDepth (d)
+			// Set t as a terminal node if its depth is greater or equal to
+			// MaxDepth (d)
 			// or if it contains less than MinSamplesSplit samples (c)
 			if (n.getKey().getDepth() > params.getMaxDepth()
 					|| n.getValue().getL_t().size() > params.getMinSamplesSplit()) {
 				toLeaf(n);
+				continue;
 			}
 			// Split the dataset
 			split = splitter.findBestSplit(n.getValue());
@@ -41,31 +43,32 @@ public class DecisionTree {
 			// Splitter is unable to split
 			if (split.isSplit()) {
 				toLeaf(n);
+				continue;
 			}
-			// Set t as a terminal node if the total decrease in impurity is less
-			// than MinImpurityDecrease (e)
+			// Set t as a terminal node if the total decrease in impurity is
+			// less than MinImpurityDecrease (e)
 			if (split.getImpurityDecrease() < params.getMinImpurityDecrease()) {
 				toLeaf(n);
-			} else {
-
-				n.getKey().setSplit(split);
-				SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
-
-				// Set t as a terminal node if there is no split such that tL and
-				// tR both count a least MinSampleLeaf samples (f)
-				if (subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()
-						|| subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()) {
-					toLeaf(n);
-				} else {
-					Node nLeft = new Node<>(n.getKey().getDepth() + 1);
-					nodeToCompute.add(new ImmutablePair<>(nLeft, subDataSets.getLeft()));
-
-					Node nRight = new Node<>(n.getKey().getDepth() + 1);
-					nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
-				}
+				continue;
 			}
 
+			n.getKey().setSplit(split);
+			SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
+
+			// Set t as a terminal node if there is no split such that tL and
+			// tR both count a least MinSampleLeaf samples (f)
+			if (subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()
+					|| subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()) {
+				toLeaf(n);
+				continue;
+			}
+			Node nLeft = new Node<>(n.getKey().getDepth() + 1);
+			nodeToCompute.add(new ImmutablePair<>(nLeft, subDataSets.getLeft()));
+
+			Node nRight = new Node<>(n.getKey().getDepth() + 1);
+			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
 		}
+
 	}
 
 	private void toLeaf(Pair<Node, IDataSet> n) {

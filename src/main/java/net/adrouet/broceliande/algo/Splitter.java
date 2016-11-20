@@ -19,7 +19,7 @@ public class Splitter {
 	private final Integer k;
 
 	public Splitter() {
-		this.k = null;
+		this(null);
 	}
 
 	public Splitter(Integer k) {

@@ -10,6 +10,16 @@ public class Parameter {
 	private long seed;
 	private int nbTrees;
 
+	public Parameter(){
+		this.minSamplesSplit = 0;
+		this.maxDepth = 10;
+		this.minImpurityDecrease = 0;
+		this.minSampleLeaf = 0;
+		this.k = 2;
+		this.seed = 4;
+		this.nbTrees = 1;
+	}
+
 	public Parameter(int nbTrees, long seed, int k, int minSamplesSplit, int maxDepth, double minImpurityDecrease,
 			int minSampleLeaf) {
 		this.minSamplesSplit = minSamplesSplit;

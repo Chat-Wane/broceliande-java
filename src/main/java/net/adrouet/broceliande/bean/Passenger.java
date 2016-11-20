@@ -3,8 +3,9 @@ package net.adrouet.broceliande.bean;
 import net.adrouet.broceliande.data.Feature;
 import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.data.Target;
+import net.adrouet.broceliande.struct.IData;
 
-public class Passenger {
+public class Passenger implements IData {
 
 	private Integer passengerId;
 	private Integer survived;
@@ -121,5 +122,10 @@ public class Passenger {
 
 	public void setEmbarked(String embarked) {
 		this.embarked = embarked;
+	}
+
+	@Override
+	public Comparable getResult() {
+		return getSurvived();
 	}
 }

@@ -33,7 +33,7 @@ public class DecisionTree {
 			// MaxDepth (d)
 			// or if it contains less than MinSamplesSplit samples (c)
 			if (n.getKey().getDepth() > params.getMaxDepth()
-					|| n.getValue().getL_t().size() > params.getMinSamplesSplit()) {
+					|| n.getValue().getL_t().size() < params.getMinSamplesSplit()) {
 				toLeaf(n);
 				continue;
 			}

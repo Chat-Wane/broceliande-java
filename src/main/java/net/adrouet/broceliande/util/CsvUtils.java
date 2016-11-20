@@ -2,6 +2,7 @@ package net.adrouet.broceliande.util;
 
 import com.opencsv.CSVReader;
 import net.adrouet.broceliande.bean.Passenger;
+import net.adrouet.broceliande.struct.IData;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,13 +11,13 @@ import java.util.List;
 
 public class CsvUtils {
 
-	public static List<Passenger> csvToPassager(String filename) throws IOException {
+	public static List<IData> csvToPassager(String filename) throws IOException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		String file = classloader.getResource(filename).getFile();
 		FileReader fReader = new FileReader(file);
 		CSVReader reader = new CSVReader(fReader);
 		String [] nextLine;
-		ArrayList<Passenger> result = new ArrayList<>();
+		ArrayList<IData> result = new ArrayList<>();
 		reader.readNext(); // Ignore header
 		while ((nextLine = reader.readNext()) != null) {
 			Passenger p = new Passenger();

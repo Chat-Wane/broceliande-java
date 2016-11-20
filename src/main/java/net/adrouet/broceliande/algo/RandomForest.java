@@ -20,7 +20,7 @@ public class RandomForest<T> {
 	 * @param p
 	 *            params
 	 */
-	RandomForest(Parameter p) {
+	public RandomForest(Parameter p) {
 		this.decisionTrees = new ArrayList<>();
 		this.splitter = new Splitter(p.getK());
 		this.bagging = new Bagging(p.getSeed());
@@ -37,8 +37,9 @@ public class RandomForest<T> {
 		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {
 			// #2 Build all decision tree
 			DecisionTree decisionTree = new DecisionTree(splitter, this.p);
-			// xxx
+			// XXX
 			DataSet ds = new DataSet<>(sample.get(0).getClass());
+			ds.setData(sample);
 			decisionTree.compute(ds, splitter);
 			decisionTrees.add(decisionTree);
 		});

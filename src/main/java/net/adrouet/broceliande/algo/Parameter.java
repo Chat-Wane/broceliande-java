@@ -15,7 +15,7 @@ public class Parameter {
 		this.maxDepth = 10;
 		this.minImpurityDecrease = 0;
 		this.minSampleLeaf = 0;
-		this.k = 2;
+		this.k = 5;
 		this.seed = 4;
 		this.nbTrees = 100;
 	}

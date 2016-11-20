@@ -58,7 +58,7 @@ public class RandomForest<T> {
 		// #1 voting
 		for (DecisionTree tree : this.decisionTrees) {
 			Object vote = tree.predict(data);
-			if (votes.containsKey(vote)) {
+			if (!votes.containsKey(vote)) {
 				votes.put(vote, new Integer(0));
 			}
 			votes.put(vote, votes.get(vote) + 1);

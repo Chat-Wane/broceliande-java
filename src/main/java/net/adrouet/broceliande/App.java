@@ -27,7 +27,11 @@ public class App {
 		List<IData> passengers = CsvUtils.csvToPassager("train.csv");
 		Parameter p = new Parameter();
 		RandomForest<Passenger> forest = new RandomForest<>(p);
+		System.out.println("Fit");
 		forest.fit(passengers);
-		System.out.println(passengers.size());
+		System.out.println("Predict");
+		long count = passengers.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
+		System.out.println(count* 100 / passengers.size());
+
 	}
 }

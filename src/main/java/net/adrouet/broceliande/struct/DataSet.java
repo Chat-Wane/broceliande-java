@@ -16,12 +16,8 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 
 
 	public DataSet(Class<D> cl) {
-		try {
-			this.p = InspectionUtils.findFeatures(cl);
-			this.dataClass = cl;
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+		this.p = InspectionUtils.findFeatures(cl);
+		this.dataClass = cl;
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package net.adrouet.broceliande.struct;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -23,11 +24,36 @@ public interface IDataSet {
 	List<IData> getL_t();
 
 	/**
+	 * Set the data for the dataset
+	 * @param data
+	 */
+	void setData(List<IData> data);
+
+	/**
 	 * split the dataset into two sub data sets depending on the cutting point
-	 * 
-	 * @param cut
-	 *            the cutting point
+	 *
+	 * @param cut the cutting point
 	 * @return
 	 */
-	SubDataSets split(Predicate<IData> cut);
+	default <T extends IDataSet> SubDataSets split(Predicate<IData> cut, Class<T> cl) {
+		List<IData> left = new ArrayList<>();
+		List<IData> right = new ArrayList<>();
+		getL_t().forEach(d -> {
+			if (cut.test(d)) {
+				left.add(d);
+			} else {
+				right.add(d);
+			}
+		});
+		try {
+			T leftDataSet = cl.newInstance();
+			leftDataSet.setData(left);
+			T rightDataSet = cl.newInstance();
+			rightDataSet.setData(right);
+			return new SubDataSets(leftDataSet, rightDataSet);
+		} catch (IllegalAccessException | InstantiationException e) {
+			throw new RuntimeException("Unable to call default constructor on " + cl.getName());
+		}
+	}
+
 }

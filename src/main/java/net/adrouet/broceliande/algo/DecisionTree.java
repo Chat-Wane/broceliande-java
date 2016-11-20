@@ -22,7 +22,7 @@ public class DecisionTree {
 			this.root.setSplit(split);
 
 			// #2 create children of the root node
-			SubDataSets subDataSets = dataSet.split(split.getCutPoint());
+			SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
 			ArrayList<Node> todoNodes = new ArrayList<>();
 			this.root.setLeft(new Node<>());
 			todoNodes.add(this.root.getLeft());

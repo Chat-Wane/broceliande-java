@@ -1,25 +1,26 @@
 package net.adrouet.broceliande.struct;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-public class Occurrences {
+public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 
-	private ArrayList<Comparable> targets = new ArrayList<>();
+	private ArrayList<R> targets = new ArrayList<>();
 	private ArrayList<Integer> occurrences = new ArrayList<>();
 
-	Integer total = 0;
+	private Integer total = 0;
 
-	public Occurrences(Set<Comparable> ts) {
-		for (Comparable t : ts) {
+	public Occurrences(Set<R> ts) {
+		for (R t : ts) {
 			this.targets.add(t);
 			this.occurrences.add(new Integer(0));
 		}
 	}
 
-	public void add(IData x) {
+	public void add(D x) {
 		int i = 0;
-		for (Comparable target : this.targets) {
+		for (R target : this.targets) {
 			if (target.compareTo(x.getResult()) == 0) {
 				this.occurrences.set(i, this.occurrences.get(i) + 1);
 			}
@@ -28,7 +29,7 @@ public class Occurrences {
 		++this.total;
 	}
 
-	public void addFrom(Occurrences o) {
+	public void addFrom(Occurrences<D, R> o) {
 		for (int i = 0; i < o.getTargets().size(); ++i) {
 			for (int j = 0; j < this.getTargets().size(); ++j) {
 				if (o.getTargets().get(i).compareTo(this.getTargets().get(j)) == 0) {
@@ -39,9 +40,9 @@ public class Occurrences {
 		this.total += o.getTotal();
 	}
 
-	public void remove(IData x) {
+	public void remove(D x) {
 		int i = 0;
-		for (Comparable target : this.targets) {
+		for (R target : this.targets) {
 			if (target.compareTo(x.getResult()) == 0) {
 				this.occurrences.set(i, this.occurrences.get(i) - 1);
 			}
@@ -65,7 +66,7 @@ public class Occurrences {
 		return total;
 	}
 
-	public ArrayList<Comparable> getTargets() {
+	public List<R> getTargets() {
 		return targets;
 	}
 }

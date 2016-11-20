@@ -1,24 +1,22 @@
 package net.adrouet.broceliande.util;
 
+import com.opencsv.CSVReader;
+import net.adrouet.broceliande.bean.Passenger;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.opencsv.CSVReader;
-
-import net.adrouet.broceliande.bean.Passenger;
-import net.adrouet.broceliande.struct.IData;
-
 public class CsvUtils {
 
-	public static List<IData> csvToPassager(String filename) throws IOException {
+	public static List<Passenger> csvToPassager(String filename) throws IOException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		String file = classloader.getResource(filename).getFile();
 		FileReader fReader = new FileReader(file);
 		CSVReader reader = new CSVReader(fReader);
 		String[] nextLine;
-		ArrayList<IData> result = new ArrayList<>();
+		ArrayList<Passenger> result = new ArrayList<>();
 		reader.readNext(); // Ignore header
 
 		while ((nextLine = reader.readNext()) != null) {

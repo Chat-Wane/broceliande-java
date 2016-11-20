@@ -1,7 +1,7 @@
 package net.adrouet.broceliande.struct;
 
-public interface IData {
+public interface IData<R extends Comparable<R>> {
 
-	Comparable getResult(); // result or target of this data
+	R getResult(); // result or target of this data
 
 }

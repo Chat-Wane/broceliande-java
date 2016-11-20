@@ -1,5 +1,11 @@
 package net.adrouet.broceliande.algo;
 
+import net.adrouet.broceliande.data.FeatureType;
+import net.adrouet.broceliande.struct.DataSet;
+import net.adrouet.broceliande.struct.IData;
+import net.adrouet.broceliande.struct.Occurrences;
+import net.adrouet.broceliande.util.InspectionUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,13 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.adrouet.broceliande.data.FeatureType;
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.IData;
-import net.adrouet.broceliande.struct.Occurrences;
-import net.adrouet.broceliande.util.InspectionUtils;
-
-public class Splitter {
+public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 	private final Integer k;
 
@@ -26,7 +26,7 @@ public class Splitter {
 		this.k = k;
 	}
 
-	public BestSplit findBestSplit(DataSet<IData> dataSet) {
+	public BestSplit findBestSplit(DataSet<D, R> dataSet) {
 		Integer k = 1;
 		if (this.k == null) {
 			k = dataSet.getP().size();
@@ -57,12 +57,10 @@ public class Splitter {
 	/**
 	 * See page 50 of LOUPPE's thesis about random forests
 	 *
-	 * @param dataSet
-	 *            the subset of node samples falling into node t (contains L_t)
-	 * @param X_j
-	 *            the j-th input variable or feature (getter)
+	 * @param dataSet the subset of node samples falling into node t (contains L_t)
+	 * @param X_j     the j-th input variable or feature (getter)
 	 */
-	public BestSplit findBestSplit(DataSet<IData> dataSet, Method X_j) {
+	public BestSplit findBestSplit(DataSet<D, R> dataSet, Method X_j) {
 		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
 		Double delta = 0.;
 
@@ -98,7 +96,7 @@ public class Splitter {
 
 		// #5 loop over the sample of t
 		Integer i = 0; // /!\ starts at 1 in the algorithm of the thesis
-		List<IData> L_t = dataSet.getL_t();
+		List<D> L_t = dataSet.getL_t();
 		Integer N_t = L_t.size(); // N_t: the number of node samples in node t
 		while (i < N_t) {
 			while (((i + 1) < N_t) && (comparator.compare(L_t.get(i), L_t.get(i + 1)) == 0)) {
@@ -159,7 +157,7 @@ public class Splitter {
 
 	/**
 	 * The impurity function iG(t) based on the Gini index
-	 * 
+	 *
 	 * @param N_cts
 	 * @param N_t
 	 * @return
@@ -179,11 +177,11 @@ public class Splitter {
 	 *
 	 * @return
 	 */
-	private static Double impurityR(DataSet<IData> dataSet) {
+	private Double impurityR(DataSet<D, R> dataSet) {
 		Integer N_t = dataSet.getL_t().size();
 		Double sum = 0.;
 		Double impurity = 0.;
-		for (IData x : dataSet.getL_t()) {
+		for (D x : dataSet.getL_t()) {
 			// (XXX) Ugly as hell
 			sum = sum.doubleValue() + ((Number) x.getResult()).doubleValue();
 		}
@@ -200,7 +198,7 @@ public class Splitter {
 	 *
 	 * @return
 	 */
-	private static Double impurityH(List<Integer> N_cts, Integer N_t) {
+	private Double impurityH(List<Integer> N_cts, Integer N_t) {
 		Double it = 0.;
 		for (Integer N_ct : N_cts) {
 			Double pc_kt = N_ct / (N_t.doubleValue());

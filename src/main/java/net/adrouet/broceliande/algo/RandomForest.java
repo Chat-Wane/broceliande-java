@@ -1,17 +1,17 @@
 package net.adrouet.broceliande.algo;
 
+import net.adrouet.broceliande.struct.DataSet;
+import net.adrouet.broceliande.struct.IData;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.IData;
+public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 
-public class RandomForest<T> {
-
-	private List<DecisionTree> decisionTrees;
-	private Splitter splitter;
+	private List<DecisionTree<D,R>> decisionTrees;
+	private Splitter<D,R> splitter;
 	private Bagging bagging;
 	private Parameter p;
 
@@ -33,7 +33,7 @@ public class RandomForest<T> {
 	 * 
 	 * @param learningSet
 	 */
-	public void fit(List<IData> learningSet) {
+	public void fit(List<D> learningSet) {
 		// #1 Bagging
 		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {
 			// #2 Build all decision tree
@@ -41,7 +41,7 @@ public class RandomForest<T> {
 			// XXX
 			DataSet ds = new DataSet<>(sample.get(0).getClass());
 			ds.setData(sample);
-			decisionTree.compute(ds, splitter);
+			decisionTree.compute(ds);
 			decisionTrees.add(decisionTree);
 		});
 
@@ -53,19 +53,19 @@ public class RandomForest<T> {
 	 * @param data
 	 * @return
 	 */
-	public Object predict(IData data) {
-		HashMap<Object, Integer> votes = new HashMap<>();
+	public R predict(D data) {
+		HashMap<R, Integer> votes = new HashMap<>();
 		// #1 voting
-		for (DecisionTree tree : this.decisionTrees) {
-			Object vote = tree.predict(data);
+		for (DecisionTree<D, R> tree : this.decisionTrees) {
+			R vote = tree.predict(data);
 			if (!votes.containsKey(vote)) {
 				votes.put(vote, new Integer(0));
 			}
 			votes.put(vote, votes.get(vote) + 1);
 		}
 		// #2 get the dominant vote
-		Entry<Object, Integer> dominant = null;
-		for (Entry<Object, Integer> vote : votes.entrySet()) {
+		Entry<R, Integer> dominant = null;
+		for (Entry<R, Integer> vote : votes.entrySet()) {
 			if (dominant == null || dominant.getValue() < vote.getValue()) {
 				dominant = vote;
 			}

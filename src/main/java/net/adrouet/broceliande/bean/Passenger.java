@@ -5,7 +5,7 @@ import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.data.Target;
 import net.adrouet.broceliande.struct.IData;
 
-public class Passenger implements IData {
+public class Passenger implements IData<Integer> {
 
 	private Integer passengerId;
 	private Integer survived;
@@ -125,7 +125,7 @@ public class Passenger implements IData {
 	}
 
 	@Override
-	public Comparable getResult() {
+	public Integer getResult() {
 		return getSurvived();
 	}
 }

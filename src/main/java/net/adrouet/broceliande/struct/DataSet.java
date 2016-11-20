@@ -8,14 +8,14 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class DataSet<T extends IData> {
+public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 
-	private Class<T> dataClass;
-	private List<T> data;
+	private Class<D> dataClass;
+	private List<D> data;
 	private Set<Method> p;
 
 
-	public DataSet(Class<T> cl) {
+	public DataSet(Class<D> cl) {
 		try {
 			this.p = InspectionUtils.findFeatures(cl);
 			this.dataClass = cl;
@@ -27,7 +27,7 @@ public class DataSet<T extends IData> {
 	/**
 	 * @return set of possible results
 	 */
-	public Set<Comparable> getJ() {
+	public Set<R> getJ() {
 		return data.stream().map(IData::getResult).distinct().collect(Collectors.toSet());
 	}
 
@@ -41,7 +41,7 @@ public class DataSet<T extends IData> {
 	/**
 	 * @return the subset of node samples falling into node t
 	 */
-	public List<T> getL_t() {
+	public List<D> getL_t() {
 		return data;
 	}
 
@@ -50,7 +50,7 @@ public class DataSet<T extends IData> {
 	 *
 	 * @param data
 	 */
-	public void setData(List<T> data) {
+	public void setData(List<D> data) {
 		this.data = data;
 	}
 
@@ -61,8 +61,8 @@ public class DataSet<T extends IData> {
 	 * @return
 	 */
 	public SubDataSets split(Predicate<IData> cut) {
-		List<T> left = new ArrayList<>();
-		List<T> right = new ArrayList<>();
+		List<D> left = new ArrayList<>();
+		List<D> right = new ArrayList<>();
 		getL_t().forEach(d -> {
 			if (cut.test(d)) {
 				left.add(d);
@@ -79,8 +79,8 @@ public class DataSet<T extends IData> {
 
 	}
 
-	public Comparable getDominantResult() {
-		Map<Comparable, Long> count = getL_t().stream()
+	public R getDominantResult() {
+		Map<R, Long> count = data.stream()
 				.collect(Collectors.groupingBy(d -> d.getResult(), Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}

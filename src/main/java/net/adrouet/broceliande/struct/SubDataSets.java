@@ -1,20 +1,20 @@
 package net.adrouet.broceliande.struct;
 
-public class SubDataSets {
+public class SubDataSets<D extends IData<R>, R extends Comparable<R>> {
 
-	private final DataSet left;
-	private final DataSet right;
+	private final DataSet<D,R>  left;
+	private final DataSet<D,R>  right;
 
-	public SubDataSets(DataSet left, DataSet right) {
+	public SubDataSets(DataSet<D,R>  left, DataSet<D,R>  right) {
 		this.left = left;
 		this.right = right;
 	}
 
-	public DataSet getLeft() {
+	public DataSet<D,R> getLeft() {
 		return left;
 	}
 
-	public DataSet getRight() {
+	public DataSet<D,R>  getRight() {
 		return right;
 	}
 

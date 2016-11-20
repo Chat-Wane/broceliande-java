@@ -2,15 +2,15 @@ package net.adrouet.broceliande.struct;
 
 import net.adrouet.broceliande.algo.BestSplit;
 
-public class Node<U> {
+public class Node<R extends Comparable<R>> {
 
 	private String label;
 
-	private Node<U> left;
+	private Node<R> left;
 
-	private Node<U> right;
+	private Node<R> right;
 
-	private U result;
+	private R result;
 
 	private BestSplit split;
 
@@ -23,7 +23,7 @@ public class Node<U> {
 		this.depth = depth;
 	}
 
-	public Node<U> getChild(IData data) {
+	public Node<R> getChild(IData data) {
 		if (this.split.getCutPoint().test(data)) {
 			return left;
 		} else
@@ -42,27 +42,27 @@ public class Node<U> {
 		this.label = label;
 	}
 
-	public Node<U> getLeft() {
+	public Node<R> getLeft() {
 		return left;
 	}
 
-	public void setLeft(Node<U> left) {
+	public void setLeft(Node<R> left) {
 		this.left = left;
 	}
 
-	public Node<U> getRight() {
+	public Node<R> getRight() {
 		return right;
 	}
 
-	public void setRight(Node<U> right) {
+	public void setRight(Node<R> right) {
 		this.right = right;
 	}
 
-	public U getResult() {
+	public R getResult() {
 		return result;
 	}
 
-	public void setResult(U result) {
+	public void setResult(R result) {
 		this.result = result;
 	}
 

@@ -1,7 +1,7 @@
 package net.adrouet.broceliande.data;
 
 import net.adrouet.broceliande.struct.IData;
-import net.adrouet.broceliande.struct.IDataSet;
+import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.util.InspectionUtils;
 
 import java.beans.IntrospectionException;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TestDataSet implements IDataSet {
+public class TestDataSet implements DataSet {
 
 	private List<IData> data;
 	private Set<Comparable> j;

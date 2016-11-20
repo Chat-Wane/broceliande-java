@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.struct.IData;
-import net.adrouet.broceliande.struct.IDataSet;
+import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.Occurrences;
 import net.adrouet.broceliande.util.InspectionUtils;
 
@@ -26,7 +26,7 @@ public class Splitter {
 		this.k = k;
 	}
 
-	public BestSplit findBestSplit(IDataSet dataSet) {
+	public BestSplit findBestSplit(DataSet dataSet) {
 		Integer k = 1;
 		if (this.k == null) {
 			k = dataSet.getP().size();
@@ -62,7 +62,7 @@ public class Splitter {
 	 * @param X_j
 	 *            the j-th input variable or feature (getter)
 	 */
-	public BestSplit findBestSplit(IDataSet dataSet, Method X_j) {
+	public BestSplit findBestSplit(DataSet dataSet, Method X_j) {
 		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
 		Double delta = 0.;
 
@@ -179,7 +179,7 @@ public class Splitter {
 	 *
 	 * @return
 	 */
-	private static Double impurityR(IDataSet dataSet) {
+	private static Double impurityR(DataSet dataSet) {
 		Integer N_t = dataSet.getL_t().size();
 		Double sum = 0.;
 		Double impurity = 0.;

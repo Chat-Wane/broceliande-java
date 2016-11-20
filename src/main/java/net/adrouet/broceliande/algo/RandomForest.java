@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;
 
 public class RandomForest<T> {
@@ -33,10 +34,12 @@ public class RandomForest<T> {
 	 */
 	public void fit(List<IData> learningSet) {
 		// #1 Bagging
-		this.bagging.generateSamples(learningSet, p.getNbTrees()).stream().forEach(sample -> {
+		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {
 			// #2 Build all decision tree
 			DecisionTree decisionTree = new DecisionTree(splitter, this.p);
-			decisionTree.compute(sample, splitter);
+			// xxx
+			DataSet ds = new DataSet<>(sample.get(0).getClass());
+			decisionTree.compute(ds, splitter);
 			decisionTrees.add(decisionTree);
 		});
 

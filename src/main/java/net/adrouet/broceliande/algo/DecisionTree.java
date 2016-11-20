@@ -2,7 +2,7 @@ package net.adrouet.broceliande.algo;
 
 import java.util.*;
 
-import net.adrouet.broceliande.struct.IDataSet;
+import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.Node;
 import net.adrouet.broceliande.struct.SubDataSets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,13 +19,13 @@ public class DecisionTree {
 		this.params = params;
 	}
 
-	public void compute(IDataSet dataSet, Splitter splitter) {
+	public void compute(DataSet dataSet, Splitter splitter) {
 
-		Queue<Pair<Node, IDataSet>> nodeToCompute = new LinkedList<>();
+		Queue<Pair<Node, DataSet>> nodeToCompute = new LinkedList<>();
 		this.root = new Node<>();
 		nodeToCompute.add(new ImmutablePair<>(this.root, dataSet));
 
-		Pair<Node, IDataSet> n;
+		Pair<Node, DataSet> n;
 		BestSplit split;
 		while (!nodeToCompute.isEmpty()) {
 			n = nodeToCompute.poll();
@@ -52,8 +52,8 @@ public class DecisionTree {
 				continue;
 			}
 
-			n.getKey().setSplit(split);
-			SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
+				n.getKey().setSplit(split);
+				SubDataSets subDataSets = dataSet.split(split.getCutPoint());
 
 			// Set t as a terminal node if there is no split such that tL and
 			// tR both count a least MinSampleLeaf samples (f)
@@ -71,7 +71,7 @@ public class DecisionTree {
 
 	}
 
-	private void toLeaf(Pair<Node, IDataSet> n) {
+	private void toLeaf(Pair<Node, DataSet> n) {
 		n.getKey().setResult(n.getValue().getDominantResult());
 	}
 

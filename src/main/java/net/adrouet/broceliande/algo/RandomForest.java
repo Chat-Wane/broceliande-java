@@ -1,7 +1,9 @@
 package net.adrouet.broceliande.algo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;
@@ -46,12 +48,28 @@ public class RandomForest<T> {
 	}
 
 	/**
-	 * Set the predicted result on tesData
+	 * Set the predicted result on data
 	 * 
-	 * @param testData
+	 * @param data
 	 * @return
 	 */
-	public void predict(IData testData) {
-
+	public Object predict(IData data) {
+		HashMap<Object, Integer> votes = new HashMap<>();
+		// #1 voting
+		for (DecisionTree tree : this.decisionTrees) {
+			Object vote = tree.predict(data);
+			if (votes.containsKey(vote)) {
+				votes.put(vote, new Integer(0));
+			}
+			votes.put(vote, votes.get(vote) + 1);
+		}
+		// #2 get the dominant vote
+		Entry<Object, Integer> dominant = null;
+		for (Entry<Object, Integer> vote : votes.entrySet()) {
+			if (dominant == null || dominant.getValue() < vote.getValue()) {
+				dominant = vote;
+			}
+		}
+		return dominant.getKey();
 	}
 }

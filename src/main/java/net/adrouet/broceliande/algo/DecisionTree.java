@@ -1,21 +1,24 @@
 package net.adrouet.broceliande.algo;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.Node;
-import net.adrouet.broceliande.struct.SubDataSets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
+import net.adrouet.broceliande.struct.DataSet;
+import net.adrouet.broceliande.struct.IData;
+import net.adrouet.broceliande.struct.Node;
+import net.adrouet.broceliande.struct.SubDataSets;
 
 public class DecisionTree {
 
 	private Node root;
-	private Splitter spliter;
+	private Splitter splitter;
 	private Parameter params;
 
 	public DecisionTree(Splitter splitter, Parameter params) {
-		this.spliter = splitter;
+		this.splitter = splitter;
 		this.params = params;
 	}
 
@@ -52,8 +55,8 @@ public class DecisionTree {
 				continue;
 			}
 
-				n.getKey().setSplit(split);
-				SubDataSets subDataSets = dataSet.split(split.getCutPoint());
+			n.getKey().setSplit(split);
+			SubDataSets subDataSets = dataSet.split(split.getCutPoint());
 
 			// Set t as a terminal node if there is no split such that tL and
 			// tR both count a least MinSampleLeaf samples (f)
@@ -73,6 +76,14 @@ public class DecisionTree {
 
 	private void toLeaf(Pair<Node, DataSet> n) {
 		n.getKey().setResult(n.getValue().getDominantResult());
+	}
+
+	public Object predict(IData data) {
+		Node currentNode = this.root;
+		while (!currentNode.isLeaf()) {
+			currentNode = this.root.getChild(data);
+		}
+		return currentNode.getResult();
 	}
 
 }

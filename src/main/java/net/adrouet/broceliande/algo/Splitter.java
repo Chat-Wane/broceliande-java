@@ -157,6 +157,13 @@ public class Splitter {
 		return (a.doubleValue() + b.doubleValue()) / 2;
 	}
 
+	/**
+	 * The impurity function iG(t) based on the Gini index
+	 * 
+	 * @param N_cts
+	 * @param N_t
+	 * @return
+	 */
 	private static Double impurityG(List<Integer> N_cts, Integer N_t) {
 		Double it = 0.;
 		for (Integer N_ct : N_cts) {
@@ -167,8 +174,8 @@ public class Splitter {
 	}
 
 	/**
-	 * (TODO) The impurity function i_R(t) based on the local resubstitution
-	 * estimate defined on the squared error loss
+	 * The impurity function i_R(t) based on the local resubstitution estimate
+	 * defined on the squared error loss
 	 *
 	 * @return
 	 */
@@ -189,11 +196,16 @@ public class Splitter {
 	}
 
 	/**
-	 * (TODO) The impurity function i_H(t) based on the Shannon entropy
+	 * The impurity function i_H(t) based on the Shannon entropy
 	 *
 	 * @return
 	 */
-	private static Double impurityH() {
-		return 0.;
+	private static Double impurityH(List<Integer> N_cts, Integer N_t) {
+		Double it = 0.;
+		for (Integer N_ct : N_cts) {
+			Double pc_kt = N_ct / (N_t.doubleValue());
+			it -= pc_kt * Math.log(pc_kt) / Math.log(2.);
+		}
+		return it;
 	}
 }

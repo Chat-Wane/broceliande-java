@@ -174,17 +174,17 @@ public class Splitter {
 	 */
 	private static Double impurityR(IDataSet dataSet) {
 		Integer N_t = dataSet.getL_t().size();
-		Number sum = 0.;
+		Double sum = 0.;
 		Double impurity = 0.;
 		for (IData x : dataSet.getL_t()) {
 			// (XXX) Ugly as hell
 			sum = sum.doubleValue() + ((Number) x.getResult()).doubleValue();
 		}
-		Number average = sum.doubleValue() / N_t.doubleValue();
+		Double average = sum / N_t.doubleValue();
 		for (IData x : dataSet.getL_t()) {
-			impurity += 1 / N_t.doubleValue()
-					* Math.pow(((Number) x.getResult()).doubleValue() - average.doubleValue(), 2);
+			impurity += Math.pow(((Number) x.getResult()).doubleValue() - average, 2);
 		}
+		impurity = impurity / N_t.doubleValue();
 		return impurity;
 	}
 

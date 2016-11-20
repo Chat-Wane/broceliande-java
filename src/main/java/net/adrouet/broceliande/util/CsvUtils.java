@@ -31,7 +31,20 @@ public class CsvUtils {
 				p.setPclass(c);
 			}
 
-			p.setName(nextLine[3]);
+			String name = nextLine[3];
+			p.setName(name);
+
+			if (name.matches(
+					".*Don.*|.*Lady.*|.*Countess.*|.*Capt.*|.*Col.*|.*Don.*|.*Dr.*|.*Major.*|.*Rev.*|.*Sir.*|.*Jonkheer.*")) {
+				p.setTitle("rare");
+			} else if (name.matches(".*Mlle.*|.*Ms.*")) {
+				p.setTitle("Miss");
+			} else if (name.matches(".*Mrs.*|.*Mme.*")) {
+				p.setTitle("Mrs");
+			} else {
+				p.setTitle("Mr");
+			}
+
 			p.setSex(nextLine[4]);
 
 			Integer age = getInteger(nextLine[5]);

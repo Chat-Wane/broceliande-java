@@ -23,14 +23,16 @@ public class App {
 	}
 
 	public static void readPassager() throws IOException {
-		List<Passenger> passengers = CsvUtils.csvToPassager("train.csv");
+		List<Passenger> train = CsvUtils.csvToPassager("train.csv");
+		// List<Passenger> test = CsvUtils.csvToPassager("test.csv");
 		Parameter p = new Parameter();
 		RandomForest<Passenger, Integer> forest = new RandomForest<>(p);
-		System.out.println("Fit");
-		forest.fit(passengers);
-		System.out.println("Predict");
-		long count = passengers.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
-		System.out.println(count* 100 / passengers.size());
-
+		// System.out.println("Fit");
+		for (int i = 0; i < 100; ++i) {
+			forest.fit(train);
+			// System.out.println("Predict");
+			long count = train.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
+			System.out.println(count * 100 / (double) train.size());
+		}
 	}
 }

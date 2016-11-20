@@ -1,12 +1,16 @@
 package net.adrouet.broceliande.struct;
 
-import net.adrouet.broceliande.util.InspectionUtils;
-
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import net.adrouet.broceliande.util.InspectionUtils;
 
 public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 
@@ -14,14 +18,9 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	private List<D> data;
 	private Set<Method> p;
 
-
 	public DataSet(Class<D> cl) {
-		try {
-			this.p = InspectionUtils.findFeatures(cl);
-			this.dataClass = cl;
-		} catch (IntrospectionException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+		this.p = InspectionUtils.findFeatures(cl);
+		this.dataClass = cl;
 	}
 
 	/**
@@ -57,7 +56,8 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	/**
 	 * split the dataset into two sub data sets depending on the cutting point
 	 *
-	 * @param cut the cutting point
+	 * @param cut
+	 *            the cutting point
 	 * @return
 	 */
 	public SubDataSets split(Predicate<IData> cut) {
@@ -80,8 +80,7 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	}
 
 	public R getDominantResult() {
-		Map<R, Long> count = data.stream()
-				.collect(Collectors.groupingBy(d -> d.getResult(), Collectors.counting()));
+		Map<R, Long> count = data.stream().collect(Collectors.groupingBy(d -> d.getResult(), Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 

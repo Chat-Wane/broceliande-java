@@ -20,6 +20,16 @@ public class Passenger implements IData<Integer> {
 	private String cabin;
 	private String embarked;
 
+	private String title;
+
+	@Feature(FeatureType.CATEGORICAL)
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public Integer getPassengerId() {
 		return passengerId;
@@ -99,6 +109,7 @@ public class Passenger implements IData<Integer> {
 		this.ticket = ticket;
 	}
 
+	@Feature(FeatureType.ORDERED)
 	public Double getFare() {
 		return fare;
 	}

@@ -17,7 +17,7 @@ public class Parameter {
 		this.minSampleLeaf = 0;
 		this.k = 2;
 		this.seed = 4;
-		this.nbTrees = 1;
+		this.nbTrees = 100;
 	}
 
 	public Parameter(int nbTrees, long seed, int k, int minSamplesSplit, int maxDepth, double minImpurityDecrease,

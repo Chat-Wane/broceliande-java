@@ -41,7 +41,7 @@ public class DecisionTree {
 			split = splitter.findBestSplit(n.getValue());
 
 			// Splitter is unable to split
-			if (split.isSplit()) {
+			if (!split.isSplit()) {
 				toLeaf(n);
 				continue;
 			}
@@ -64,9 +64,12 @@ public class DecisionTree {
 			}
 			Node nLeft = new Node<>(n.getKey().getDepth() + 1);
 			nodeToCompute.add(new ImmutablePair<>(nLeft, subDataSets.getLeft()));
+			n.getKey().setLeft(nLeft);
 
 			Node nRight = new Node<>(n.getKey().getDepth() + 1);
 			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
+			n.getKey().setRight(nRight);
+
 		}
 
 	}

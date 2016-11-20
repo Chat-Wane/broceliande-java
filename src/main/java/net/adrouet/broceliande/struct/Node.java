@@ -14,7 +14,13 @@ public class Node<U> {
 
 	private BestSplit split;
 
+	private int depth = 0;
+
 	public Node() {
+	}
+
+	public Node(int depth){
+		this.depth = depth;
 	}
 
 	public Node<U> getChild(IData data) {
@@ -66,5 +72,9 @@ public class Node<U> {
 	
 	public BestSplit getSplit() {
 		return split;
+	}
+
+	public int getDepth() {
+		return depth;
 	}
 }

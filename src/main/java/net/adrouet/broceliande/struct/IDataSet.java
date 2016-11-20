@@ -1,10 +1,9 @@
 package net.adrouet.broceliande.struct;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public interface IDataSet {
 
@@ -54,6 +53,12 @@ public interface IDataSet {
 		} catch (IllegalAccessException | InstantiationException e) {
 			throw new RuntimeException("Unable to call default constructor on " + cl.getName());
 		}
+	}
+
+	default Comparable getDominantResult(){
+		Map<Comparable, Long> count = getL_t().stream()
+				.collect(Collectors.groupingBy(d -> d.getResult(), Collectors.counting()));
+		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 
 }

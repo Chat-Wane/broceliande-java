@@ -1,43 +1,75 @@
 package net.adrouet.broceliande.algo;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import net.adrouet.broceliande.struct.IDataSet;
 import net.adrouet.broceliande.struct.Node;
 import net.adrouet.broceliande.struct.SubDataSets;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class DecisionTree {
 
 	private Node root;
+	private Splitter spliter;
+	private Parameter params;
 
-	public DecisionTree(IDataSet dataSet, Splitter splitter) {
-		Integer i = 0;
-		Integer p = (int) Math.floor(Math.sqrt((double) dataSet.getP().size()));
+	public DecisionTree(Splitter splitter, Parameter params) {
+		this.spliter = splitter;
+		this.params = params;
+	}
 
-		// #1 create the fitest split on 1 of the feature (root)
-		BestSplit split = splitter.findBestSplit(dataSet);
+	public void compute(IDataSet dataSet, Splitter splitter) {
 
-		if (split.isSplit()) {
-			this.root = new Node<>();
-			this.root.setSplit(split);
+		Queue<Pair<Node, IDataSet>> nodeToCompute = new LinkedList<>();
+		this.root = new Node<>();
+		nodeToCompute.add(new ImmutablePair<>(this.root, dataSet));
 
-			// #2 create children of the root node
-			SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
-			ArrayList<Node> todoNodes = new ArrayList<>();
-			this.root.setLeft(new Node<>());
-			todoNodes.add(this.root.getLeft());
-			this.root.setRight(new Node<>());
-			todoNodes.add(this.root.getRight());
-			ArrayList<IDataSet> todoDataSets = new ArrayList<>();
-			todoDataSets.add(subDataSets.getLeft());
-			todoDataSets.add(subDataSets.getRight());
-
-			boolean stop = false;
-			while (!stop) {
-
-				stop = todoNodes.isEmpty();
+		Pair<Node, IDataSet> n;
+		BestSplit split;
+		while (!nodeToCompute.isEmpty()) {
+			n = nodeToCompute.poll();
+			// Set t as a terminal node if its depth is greater or equal to MaxDepth (d)
+			// or if it contains less than MinSamplesSplit samples (c)
+			if (n.getKey().getDepth() > params.getMaxDepth()
+					|| n.getValue().getL_t().size() > params.getMinSamplesSplit()) {
+				toLeaf(n);
 			}
+			// Split the dataset
+			split = splitter.findBestSplit(n.getValue());
+
+			// Splitter is unable to split
+			if (split.isSplit()) {
+				toLeaf(n);
+			}
+			// Set t as a terminal node if the total decrease in impurity is less
+			// than MinImpurityDecrease (e)
+			if (split.getImpurityDecrease() < params.getMinImpurityDecrease()) {
+				toLeaf(n);
+			} else {
+
+				n.getKey().setSplit(split);
+				SubDataSets subDataSets = dataSet.split(split.getCutPoint(), dataSet.getClass());
+
+				// Set t as a terminal node if there is no split such that tL and
+				// tR both count a least MinSampleLeaf samples (f)
+				if (subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()
+						|| subDataSets.getLeft().getL_t().size() < params.getMinSampleLeaf()) {
+					toLeaf(n);
+				} else {
+					Node nLeft = new Node<>(n.getKey().getDepth() + 1);
+					nodeToCompute.add(new ImmutablePair<>(nLeft, subDataSets.getLeft()));
+
+					Node nRight = new Node<>(n.getKey().getDepth() + 1);
+					nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
+				}
+			}
+
 		}
+	}
+
+	private void toLeaf(Pair<Node, IDataSet> n) {
+		n.getKey().setResult(n.getValue().getDominantResult());
 	}
 
 }

@@ -84,7 +84,7 @@ public class DecisionTree {
 	public Object predict(IData data) {
 		Node currentNode = this.root;
 		while (!currentNode.isLeaf()) {
-			currentNode = this.root.getChild(data);
+			currentNode = currentNode.getChild(data);
 		}
 		return currentNode.getResult();
 	}

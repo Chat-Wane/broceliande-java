@@ -2,7 +2,6 @@ package net.adrouet.broceliande.algo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;

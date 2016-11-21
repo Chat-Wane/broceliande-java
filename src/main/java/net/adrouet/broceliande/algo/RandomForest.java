@@ -38,7 +38,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	 * @param learningSet
 	 */
 	public void fit(List<D> learningSet) {
-		LOG.info("Fit: learning set with [} elements, generating {} trees ", learningSet.size(), p.getNbTrees());
+		LOG.info("Fit: learning set with {} elements, generating {} trees ", learningSet.size(), p.getNbTrees());
 		long startTime = System.currentTimeMillis();
 		// #1 Bagging
 		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {

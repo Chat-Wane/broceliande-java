@@ -81,6 +81,8 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
 			n.getKey().setRight(nRight);
 
+			LOG.trace("New Nodes: [{}][{}]",subDataSets.getLeft().getL_t().size(), subDataSets.getRight().getL_t().size());
+
 		}
 
 		long endTime = System.currentTimeMillis();

@@ -46,7 +46,6 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 			Collections.shuffle(randomP);
 			randomP.remove(randomP.size() - 1);
 		}
-		LOG.trace("Finding best split. features: {}", randomP);
 		for (Method X_j : randomP) {
 			// #1 find the best binary split s*_j defined on X_j
 			BestSplit splitX_j = this.findBestSplit(dataSet, X_j);

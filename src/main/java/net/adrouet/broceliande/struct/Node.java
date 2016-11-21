@@ -1,83 +1,80 @@
 package net.adrouet.broceliande.struct;
 
-import java.util.function.Predicate;
+import net.adrouet.broceliande.algo.BestSplit;
 
-public class Node<T, U> {
+public class Node<R extends Comparable<R>> {
 
-    private String label;
+	private String label;
 
-    private Node<T, U> left;
+	private Node<R> left;
 
-    private Node<T, U> right;
+	private Node<R> right;
 
-    private Predicate<T> predicate;
+	private R result;
 
-    private U result;
+	private BestSplit split;
 
-    private float impurity;
+	private int depth = 0;
 
-    public Node() {
-        this.predicate = (T t) -> false;
-    }
+	public Node() {
+	}
 
-    public Node<T, U> getChild(T data) {
-        if (left.getPredicate().test(data)) {
-            return left;
-        } else if (right.getPredicate().test(data)) {
-            return right;
-        }
-        return null;
-    }
+	public Node(int depth){
+		this.depth = depth;
+	}
 
-    public boolean isLeaf() {
-        return result != null;
-    }
+	public Node<R> getChild(IData data) {
+		if (this.split.getCutPoint().test(data)) {
+			return left;
+		} else
+			return right;
+	}
 
-    public String getLabel() {
-        return label;
-    }
+	public boolean isLeaf() {
+		return result != null;
+	}
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+	public String getLabel() {
+		return label;
+	}
 
-    public Node<T, U> getLeft() {
-        return left;
-    }
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
-    public void setLeft(Node<T, U> left) {
-        this.left = left;
-    }
+	public Node<R> getLeft() {
+		return left;
+	}
 
-    public Node<T, U> getRight() {
-        return right;
-    }
+	public void setLeft(Node<R> left) {
+		this.left = left;
+	}
 
-    public void setRight(Node<T, U> right) {
-        this.right = right;
-    }
+	public Node<R> getRight() {
+		return right;
+	}
 
-    public Predicate<T> getPredicate() {
-        return predicate;
-    }
+	public void setRight(Node<R> right) {
+		this.right = right;
+	}
 
-    public void setPredicate(Predicate<T> predicate) {
-        this.predicate = predicate;
-    }
+	public R getResult() {
+		return result;
+	}
 
-    public U getResult() {
-        return result;
-    }
+	public void setResult(R result) {
+		this.result = result;
+	}
 
-    public void setResult(U result) {
-        this.result = result;
-    }
+	public void setSplit(BestSplit split) {
+		this.split = split;
+	}
+	
+	public BestSplit getSplit() {
+		return split;
+	}
 
-    public float getImpurity() {
-        return impurity;
-    }
-
-    public void setImpurity(float impurity) {
-        this.impurity = impurity;
-    }
+	public int getDepth() {
+		return depth;
+	}
 }

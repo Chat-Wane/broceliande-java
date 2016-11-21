@@ -1,124 +1,142 @@
 package net.adrouet.broceliande.bean;
 
 import net.adrouet.broceliande.data.Feature;
+import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.data.Target;
+import net.adrouet.broceliande.struct.IData;
 
-public class Passenger {
+public class Passenger implements IData<Integer> {
 
-    private Integer passengerId;
-    private Integer survived;
-    private Integer pclass;
-    private String name;
-    private String sex;
-    private Integer age;
-    private Integer sibSp;
-    private Integer parch;
-    private String ticket;
-    private Double fare;
-    private String cabin;
-    private String embarked;
+	private Integer passengerId;
+	private Integer survived;
+	private Integer pclass;
+	private String name;
+	private String sex;
+	private Integer age;
+	private Integer sibSp;
+	private Integer parch;
+	private String ticket;
+	private Double fare;
+	private String cabin;
+	private String embarked;
 
+	private String title;
 
-    public Integer getPassengerId() {
-        return passengerId;
-    }
+	@Feature(FeatureType.CATEGORICAL)
+	public String getTitle() {
+		return title;
+	}
 
-    public void setPassengerId(Integer passengerId) {
-        this.passengerId = passengerId;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    @Target
-    public Integer getSurvived() {
-        return survived;
-    }
+	public Integer getPassengerId() {
+		return passengerId;
+	}
 
-    public void setSurvived(Integer survived) {
-        this.survived = survived;
-    }
+	public void setPassengerId(Integer passengerId) {
+		this.passengerId = passengerId;
+	}
 
-    @Feature
-    public Integer getPclass() {
-        return pclass;
-    }
+	@Target
+	public Integer getSurvived() {
+		return survived;
+	}
 
-    public void setPclass(Integer pclass) {
-        this.pclass = pclass;
-    }
+	public void setSurvived(Integer survived) {
+		this.survived = survived;
+	}
 
-    public String getName() {
-        return name;
-    }
+	@Feature(FeatureType.ORDERED)
+	public Integer getPclass() {
+		return pclass;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setPclass(Integer pclass) {
+		this.pclass = pclass;
+	}
 
-    @Feature
-    public String getSex() {
-        return sex;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @Feature
-    public Integer getAge() {
-        return age;
-    }
+	@Feature(FeatureType.CATEGORICAL)
+	public String getSex() {
+		return sex;
+	}
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
 
-    @Feature
-    public Integer getSibSp() {
-        return sibSp;
-    }
+	@Feature(FeatureType.ORDERED)
+	public Integer getAge() {
+		return age;
+	}
 
-    public void setSibSp(Integer sibSp) {
-        this.sibSp = sibSp;
-    }
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
-    @Feature
-    public Integer getParch() {
-        return parch;
-    }
+	@Feature(FeatureType.ORDERED)
+	public Integer getSibSp() {
+		return sibSp;
+	}
 
-    public void setParch(Integer parch) {
-        this.parch = parch;
-    }
+	public void setSibSp(Integer sibSp) {
+		this.sibSp = sibSp;
+	}
 
-    public String getTicket() {
-        return ticket;
-    }
+	@Feature(FeatureType.ORDERED)
+	public Integer getParch() {
+		return parch;
+	}
 
-    public void setTicket(String ticket) {
-        this.ticket = ticket;
-    }
+	public void setParch(Integer parch) {
+		this.parch = parch;
+	}
 
-    public Double getFare() {
-        return fare;
-    }
+	public String getTicket() {
+		return ticket;
+	}
 
-    public void setFare(Double fare) {
-        this.fare = fare;
-    }
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
 
-    public String getCabin() {
-        return cabin;
-    }
+	@Feature(FeatureType.ORDERED)
+	public Double getFare() {
+		return fare;
+	}
 
-    public void setCabin(String cabin) {
-        this.cabin = cabin;
-    }
+	public void setFare(Double fare) {
+		this.fare = fare;
+	}
 
-    @Feature
-    public String getEmbarked() {
-        return embarked;
-    }
+	public String getCabin() {
+		return cabin;
+	}
 
-    public void setEmbarked(String embarked) {
-        this.embarked = embarked;
-    }
+	public void setCabin(String cabin) {
+		this.cabin = cabin;
+	}
+
+	@Feature(FeatureType.CATEGORICAL)
+	public String getEmbarked() {
+		return embarked;
+	}
+
+	public void setEmbarked(String embarked) {
+		this.embarked = embarked;
+	}
+
+	@Override
+	public Integer getResult() {
+		return getSurvived();
+	}
 }

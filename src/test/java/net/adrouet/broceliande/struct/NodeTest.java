@@ -1,34 +1,34 @@
 package net.adrouet.broceliande.struct;
 
-import net.adrouet.broceliande.data.TestData;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.function.Predicate;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import net.adrouet.broceliande.algo.BestSplit;
+import net.adrouet.broceliande.data.TestData;
 
 public class NodeTest {
 
+	@Test
+	public void testNodeTransition() {
+		Node<String> root = new Node<>();
 
+		Predicate<IData> isMale = t -> ((TestData) t).getGender().equals("M");
+		BestSplit splitIsMale = new BestSplit(null, isMale, null);
 
-    @Test
-    public void testNodeTransition(){
-        Node<TestData, Boolean> root = new Node<>();
-        Node<TestData, Boolean> child = new Node<>();
+		root.setSplit(splitIsMale);
 
-        Predicate<TestData> isMale = t-> t.getSex().equals("M");
-        Predicate<TestData> isFemale = isMale.negate();
+		Node<String> child = new Node<>();
+		child.setResult("YES");
+		root.setLeft(child);
 
-        child.setPredicate(isMale);
-        child.setResult(true);
-        root.setLeft(child);
+		child = new Node<>();
+		child.setResult("NO");
+		root.setRight(child);
 
-        child = new Node<>();
-        child.setResult(false);
-        child.setPredicate(isFemale);
-        root.setRight(child);
-
-        assertTrue(root.getChild(new TestData("M",12,true)).getResult());
-        assertFalse(root.getChild(new TestData("F",12,true)).getResult());
-    }
+		assertEquals("YES", root.getChild(new TestData("M", 12, "YES")).getResult());
+		assertEquals("NO", root.getChild(new TestData("F", 12, "NO")).getResult());
+	}
 }

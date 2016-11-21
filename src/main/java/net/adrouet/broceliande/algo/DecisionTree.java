@@ -64,7 +64,7 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 			}
 
 			n.getKey().setSplit(split);
-			SubDataSets<D, R> subDataSets = dataSet.split(split.getCutPoint());
+			SubDataSets<D, R> subDataSets = n.getValue().split(split.getCutPoint());
 
 			// Set t as a terminal node if there is no split such that tL and
 			// tR both count a least MinSampleLeaf samples (f)

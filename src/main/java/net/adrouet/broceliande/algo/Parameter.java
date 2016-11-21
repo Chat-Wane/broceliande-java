@@ -86,4 +86,17 @@ public class Parameter {
 	public void setMinSampleLeaf(int minSampleLeaf) {
 		this.minSampleLeaf = minSampleLeaf;
 	}
+
+	@Override
+	public String toString() {
+		return "Parameter{" +
+				"minSamplesSplit=" + minSamplesSplit +
+				", maxDepth=" + maxDepth +
+				", minImpurityDecrease=" + minImpurityDecrease +
+				", minSampleLeaf=" + minSampleLeaf +
+				", k=" + k +
+				", seed=" + seed +
+				", nbTrees=" + nbTrees +
+				'}';
+	}
 }

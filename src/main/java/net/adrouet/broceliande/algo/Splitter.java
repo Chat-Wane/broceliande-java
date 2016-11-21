@@ -5,6 +5,8 @@ import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;
 import net.adrouet.broceliande.struct.Occurrences;
 import net.adrouet.broceliande.util.InspectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Splitter<D extends IData<R>, R extends Comparable<R>> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Splitter.class);
 
 	private final Integer k;
 
@@ -42,6 +46,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 			Collections.shuffle(randomP);
 			randomP.remove(randomP.size() - 1);
 		}
+		LOG.trace("Finding best split. features: {}", randomP);
 		for (Method X_j : randomP) {
 			// #1 find the best binary split s*_j defined on X_j
 			BestSplit splitX_j = this.findBestSplit(dataSet, X_j);
@@ -50,6 +55,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 				sstar = splitX_j;
 			}
 		}
+		LOG.trace("Best split found: {}", sstar);
 
 		return sstar;
 	}

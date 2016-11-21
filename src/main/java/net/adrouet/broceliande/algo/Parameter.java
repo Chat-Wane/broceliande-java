@@ -1,5 +1,7 @@
 package net.adrouet.broceliande.algo;
 
+import java.util.Random;
+
 public class Parameter {
 
 	private int minSamplesSplit;
@@ -9,82 +11,101 @@ public class Parameter {
 	private int k;
 	private long seed;
 	private int nbTrees;
+	private Random random;
 
-	public Parameter(){
-		this.minSamplesSplit = 0;
-		this.maxDepth = 10;
-		this.minImpurityDecrease = 0;
-		this.minSampleLeaf = 0;
-		this.k = 5;
-		this.seed = 4;
-		this.nbTrees = 1;
+	public static class Builder {
+		private int minSamplesSplit = 2;
+		private int maxDepth = Integer.MAX_VALUE;
+		private double minImpurityDecrease = 1e-07;
+		private int minSampleLeaf = 1;
+		private int maxFeatures = Integer.MAX_VALUE;
+		private int nbTrees = 10;
+		private Long seed = null;
+
+		public Builder minSamplesSplit(int minSamplesSplit) {
+			this.minSamplesSplit = minSamplesSplit;
+			return this;
+		}
+
+		public Builder maxDepth(int maxDepth) {
+			this.maxDepth = maxDepth;
+			return this;
+		}
+
+		public Builder minImpurityDecrease(double minImpurityDecrease) {
+			this.minImpurityDecrease = minImpurityDecrease;
+			return this;
+		}
+
+		public Builder minSampleLeaf(int minSampleLeaf) {
+			this.minSampleLeaf = minSampleLeaf;
+			return this;
+		}
+
+		public Builder maxFeatures(int k) {
+			this.maxFeatures = maxFeatures;
+			return this;
+		}
+
+		public Builder seed(Long seed) {
+			this.seed = seed;
+			return this;
+		}
+
+		public Builder nbTrees(int nbTrees) {
+			this.nbTrees = nbTrees;
+			return this;
+		}
+
+		public Parameter build() {
+			return new Parameter(this);
+		}
+
 	}
 
-	public Parameter(int nbTrees, long seed, int k, int minSamplesSplit, int maxDepth, double minImpurityDecrease,
-			int minSampleLeaf) {
-		this.minSamplesSplit = minSamplesSplit;
-		this.maxDepth = maxDepth;
-		this.minImpurityDecrease = minImpurityDecrease;
-		this.minSampleLeaf = minSampleLeaf;
-		this.k = k;
-		this.seed = seed;
-		this.nbTrees = nbTrees;
+	private Parameter(Builder builder) {
+		this.minSamplesSplit = builder.minSamplesSplit;
+		this.maxDepth = builder.maxDepth;
+		this.minImpurityDecrease = builder.minImpurityDecrease;
+		this.minSampleLeaf = builder.minSampleLeaf;
+		this.k = builder.maxFeatures;
+		this.nbTrees = builder.nbTrees;
+		if(builder.seed == null){
+			this.random = new Random();
+			this.seed = this.random.nextLong();
+			this.random.setSeed(this.seed);
+		} else {
+			this.random = new Random(builder.seed);
+			this.seed = builder.seed;
+		}
 	}
 
 	public int getNbTrees() {
 		return nbTrees;
 	}
 
-	public void setNbTrees(int nbTrees) {
-		this.nbTrees = nbTrees;
-	}
-
 	public long getSeed() {
 		return seed;
-	}
-
-	public void setSeed(long seed) {
-		this.seed = seed;
 	}
 
 	public int getK() {
 		return k;
 	}
 
-	public void setK(int k) {
-		this.k = k;
-	}
-
 	public int getMinSamplesSplit() {
 		return minSamplesSplit;
-	}
-
-	public void setMinSamplesSplit(int minSamplesSplit) {
-		this.minSamplesSplit = minSamplesSplit;
 	}
 
 	public int getMaxDepth() {
 		return maxDepth;
 	}
 
-	public void setMaxDepth(int maxDepth) {
-		this.maxDepth = maxDepth;
-	}
-
 	public double getMinImpurityDecrease() {
 		return minImpurityDecrease;
 	}
 
-	public void setMinImpurityDecrease(double minImpurityDecrease) {
-		this.minImpurityDecrease = minImpurityDecrease;
-	}
-
 	public int getMinSampleLeaf() {
 		return minSampleLeaf;
-	}
-
-	public void setMinSampleLeaf(int minSampleLeaf) {
-		this.minSampleLeaf = minSampleLeaf;
 	}
 
 	@Override

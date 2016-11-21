@@ -28,7 +28,7 @@ public class App {
 	public static void readPassager() throws IOException {
 		List<Passenger> train = CsvUtils.csvToPassager("train.csv");
 		// List<Passenger> test = CsvUtils.csvToPassager("test.csv");
-		Parameter p = new Parameter();
+		Parameter p = new Parameter.Builder().build();
 		RandomForest<Passenger, Integer> forest = new RandomForest<>(p);
 		// System.out.println("Fit");
 		for (int i = 0; i < 100; ++i) {

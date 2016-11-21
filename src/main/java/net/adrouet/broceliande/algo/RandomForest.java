@@ -1,17 +1,20 @@
 package net.adrouet.broceliande.algo;
 
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.IData;
-
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import net.adrouet.broceliande.struct.DataSet;
+import net.adrouet.broceliande.struct.IData;
+
 public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 
-	private List<DecisionTree<D,R>> decisionTrees;
-	private Splitter<D,R> splitter;
+	private List<DecisionTree<D, R>> decisionTrees;
+	private Splitter<D, R> splitter;
 	private Bagging bagging;
 	private Parameter p;
 
@@ -72,4 +75,12 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		}
 		return dominant.getKey();
 	}
+
+	public List<ImmutablePair<Method, Double>> importance() {
+		for (DecisionTree<D, R> tree : this.decisionTrees) {
+			// (TODO)
+		}
+		return null;
+	}
+
 }

@@ -44,4 +44,11 @@ public class BestSplit {
 		return this.cutPoint != null;
 	}
 
+	@Override
+	public String toString() {
+		return "BestSplit{" +
+				"feature=" + feature.getName() +
+				", impurityDecrease=" + impurityDecrease +
+				'}';
+	}
 }

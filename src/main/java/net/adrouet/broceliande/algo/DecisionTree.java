@@ -6,15 +6,22 @@ import net.adrouet.broceliande.struct.Node;
 import net.adrouet.broceliande.struct.SubDataSets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 
+	private final static Logger LOG = LoggerFactory.getLogger(DecisionTree.class);
+
 	private Node<R> root;
 	private Splitter splitter;
 	private Parameter params;
+
+	private int nbLeaf = 0;
+	private int maxDepth = 0;
 
 	public DecisionTree(Splitter splitter, Parameter params) {
 		this.splitter = splitter;
@@ -22,6 +29,8 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 	}
 
 	public void compute(DataSet<D, R> dataSet) {
+		LOG.info("Computing decision tree");
+		long startTime = System.currentTimeMillis();
 
 		Queue<Pair<Node<R>, DataSet<D, R>>> nodeToCompute = new LinkedList<>();
 		this.root = new Node<>();
@@ -34,7 +43,7 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 			// Set t as a terminal node if its depth is greater or equal to
 			// MaxDepth (d)
 			// or if it contains less than MinSamplesSplit samples (c)
-			if (n.getKey().getDepth() > this.params.getMaxDepth()
+			if (n.getKey().getDepth() >= this.params.getMaxDepth()
 					|| n.getValue().getL_t().size() < this.params.getMinSamplesSplit()) {
 				toLeaf(n);
 				continue;
@@ -74,10 +83,17 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 
 		}
 
+		long endTime = System.currentTimeMillis();
+		LOG.debug("Decision tree: end in {} ms with {} leaves and depth {}",
+				endTime - startTime, this.nbLeaf, this.maxDepth);
 	}
 
 	private void toLeaf(Pair<Node<R>, DataSet<D, R>> n) {
 		n.getKey().setResult(n.getValue().getDominantResult());
+		this.nbLeaf++;
+		if (n.getKey().getDepth() > this.maxDepth) {
+			this.maxDepth = n.getKey().getDepth();
+		}
 	}
 
 	public R predict(D data) {

@@ -4,11 +4,15 @@ import net.adrouet.broceliande.algo.Parameter;
 import net.adrouet.broceliande.algo.RandomForest;
 import net.adrouet.broceliande.bean.Passenger;
 import net.adrouet.broceliande.util.CsvUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class App {
+
+	private static Logger LOG = LoggerFactory.getLogger(App.class);
 
 	public static void main(String[] args) {
 		// Do stuff one day
@@ -17,7 +21,6 @@ public class App {
 			readPassager();
 		} catch (IOException e) {
 			e.printStackTrace();
-
 		}
 
 	}
@@ -32,7 +35,7 @@ public class App {
 			forest.fit(train);
 			// System.out.println("Predict");
 			long count = train.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
-			System.out.println(count * 100 / (double) train.size());
+			LOG.info("Success rate: {}%", String.format("%.2f", count * 100 / (double) train.size()));
 		}
 	}
 }

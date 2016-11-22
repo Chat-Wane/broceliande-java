@@ -10,40 +10,36 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Splitter.class);
 
-	private final Integer k;
+	private Integer k;
+	private Random random;
 
 	public Splitter() {
-		this(null);
+		this(null, new Random());
 	}
 
-	public Splitter(Integer k) {
+	public Splitter(Integer k, Random random) {
 		this.k = k;
+		this.random = random;
 	}
 
 	public BestSplit findBestSplit(DataSet<D, R> dataSet) {
-		Integer k = 1;
 		if (this.k == null) {
-			k = dataSet.getP().size();
-		} else {
-			k = this.k;
+			this.k = dataSet.getP().size();
 		}
 
 		BestSplit sstar = new BestSplit(null, null, 0.);
 		Double delta = Double.NEGATIVE_INFINITY;
 		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
 		// #1 draw random getters from the features
-		Collections.shuffle(randomP);
-		while (randomP.size() > k) {
+		Collections.shuffle(randomP, this.random);
+		while (randomP.size() > this.k) {
 			randomP.remove(randomP.size() - 1);
 		}
 		for (Method X_j : randomP) {

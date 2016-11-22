@@ -31,8 +31,8 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	public RandomForest(Parameter p) {
 		LOG.debug("Initializing Random Forest : {}", p);
 		this.decisionTrees = new ArrayList<>();
-		this.splitter = new Splitter(p.getK());
-		this.bagging = new Bagging(p.getSeed());
+		this.splitter = new Splitter(p.getK(), p.getRandom());
+		this.bagging = new Bagging(p.getRandom());
 		this.p = p;
 	}
 

@@ -108,6 +108,10 @@ public class Parameter {
 		return minSampleLeaf;
 	}
 
+	public Random getRandom(){
+		return this.random;
+	}
+
 	@Override
 	public String toString() {
 		return "Parameter{" +

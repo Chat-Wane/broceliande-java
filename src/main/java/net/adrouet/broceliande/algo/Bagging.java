@@ -8,16 +8,10 @@ import java.util.stream.Stream;
 
 public class Bagging {
 
-	private long seed;
 	private Random random;
 
-	public Bagging() {
-		this(7);
-	}
-
-	public Bagging(long seed) {
-		this.seed = seed;
-		this.random = new Random(seed);
+	public Bagging(Random random) {
+		this.random = random;
 	}
 
 	public <T> List<List<T>> generateSamples(List<T> data, int nbSample) {
@@ -38,10 +32,4 @@ public class Bagging {
 		return sample;
 	}
 
-	@Override
-	public String toString() {
-		return "Bagging{" +
-				", seed=" + seed +
-				'}';
-	}
 }

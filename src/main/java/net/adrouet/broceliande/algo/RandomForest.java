@@ -1,23 +1,18 @@
 package net.adrouet.broceliande.algo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;
 import net.adrouet.broceliande.struct.Node;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 
@@ -86,6 +81,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 				dominant = vote;
 			}
 		}
+		LOG.trace("Predict vote result: {}", votes );
 		return dominant.getKey();
 	}
 
@@ -98,13 +94,11 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		HashMap<String, MutablePair<Integer, Double>> sums = new HashMap<>();
 		// #1 collect the impurity decreases
 		for (DecisionTree<D, R> tree : this.decisionTrees) {
-			Iterator<Node<R>> it = tree.iterator();
-			while (it.hasNext()) {
-				Node<R> current = it.next();
+			for (Node<R> current : tree) {
 				if (!current.isLeaf()) {
 					String name = current.getSplit().getFeature().getName();
 					if (!sums.containsKey(name)) {
-						sums.put(name, new MutablePair<Integer, Double>(0, 0.));
+						sums.put(name, new MutablePair<>(0, 0.));
 					}
 					MutablePair<Integer, Double> increase = sums.get(name);
 					increase.setLeft(increase.getLeft() + 1);
@@ -113,25 +107,11 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 			}
 		}
 		// #2 sort the collection
-		List<ImmutablePair<String, Double>> rank = new ArrayList<>();
-		for (Entry<String, MutablePair<Integer, Double>> element : sums.entrySet()) {
-			rank.add(new ImmutablePair<String, Double>(element.getKey(),
-					element.getValue().right / element.getValue().left));
-		}
+		List<ImmutablePair<String, Double>> rank = sums.entrySet().stream()
+				.map(elt -> new ImmutablePair<>(elt.getKey(), elt.getValue().right / elt.getValue().left))
+				.sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+				.collect(Collectors.toList());
 
-		// (TODO) get the Comparator out
-		Collections.sort(rank, new Comparator<Entry<String, Double>>() {
-
-			@Override
-			public int compare(Entry<String, Double> o1, Entry<String, Double> o2) {
-				if (o1.getValue() < o2.getValue()) {
-					return 1;
-				} else if (o1.getValue() > o2.getValue()) {
-					return -1;
-				}
-				return 0;
-			}
-		});
 		return rank;
 	}
 

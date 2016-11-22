@@ -42,7 +42,7 @@ public class Parameter {
 			return this;
 		}
 
-		public Builder maxFeatures(int k) {
+		public Builder maxFeatures(int maxFeatures) {
 			this.maxFeatures = maxFeatures;
 			return this;
 		}

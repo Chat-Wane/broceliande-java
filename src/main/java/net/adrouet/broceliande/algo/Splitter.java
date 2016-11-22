@@ -67,15 +67,13 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 		// #1 initialize the statistics for t_R to i(t)
 		// t_R: the right child of node t
-		Occurrences occ_R = new Occurrences(dataSet.getJ());
+		Occurrences<D,R> occ_R = new Occurrences<>(dataSet.getJ());
 		// #A fill the right node with all data
-		for (IData x : dataSet.getL_t()) {
-			occ_R.add(x);
-		}
+		dataSet.getL_t().forEach(occ_R::add);
 
 		// #2 initialize the statistics for t_L to 0
 		// t_L: the left child of node t
-		Occurrences occ_L = new Occurrences(dataSet.getJ());
+		Occurrences<D,R> occ_L = new Occurrences<>(dataSet.getJ());
 
 		// #3 initialize i(t)
 		// i(t): the impurity of node t

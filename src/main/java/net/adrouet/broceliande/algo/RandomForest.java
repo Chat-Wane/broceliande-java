@@ -1,17 +1,23 @@
 package net.adrouet.broceliande.algo;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.adrouet.broceliande.struct.DataSet;
 import net.adrouet.broceliande.struct.IData;
+import net.adrouet.broceliande.struct.Node;
 
 public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 
@@ -83,11 +89,50 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		return dominant.getKey();
 	}
 
-	public List<ImmutablePair<Method, Double>> importance() {
+	/**
+	 * rank the features by their importance
+	 * 
+	 * @return
+	 */
+	public List<ImmutablePair<String, Double>> importance() {
+		HashMap<String, MutablePair<Integer, Double>> sums = new HashMap<>();
+		// #1 collect the impurity decreases
 		for (DecisionTree<D, R> tree : this.decisionTrees) {
-			// (TODO)
+			Iterator<Node<R>> it = tree.iterator();
+			while (it.hasNext()) {
+				Node<R> current = it.next();
+				if (!current.isLeaf()) {
+					String name = current.getSplit().getFeature().getName();
+					if (!sums.containsKey(name)) {
+						sums.put(name, new MutablePair<Integer, Double>(0, 0.));
+					}
+					MutablePair<Integer, Double> increase = sums.get(name);
+					increase.setLeft(increase.getLeft() + 1);
+					increase.setRight(increase.getRight() + current.getSplit().getImpurityDecrease());
+				}
+			}
 		}
-		return null;
+		// #2 sort the collection
+		List<ImmutablePair<String, Double>> rank = new ArrayList<>();
+		for (Entry<String, MutablePair<Integer, Double>> element : sums.entrySet()) {
+			rank.add(new ImmutablePair<String, Double>(element.getKey(),
+					element.getValue().right / element.getValue().left));
+		}
+
+		// (TODO) get the Comparator out
+		Collections.sort(rank, new Comparator<Entry<String, Double>>() {
+
+			@Override
+			public int compare(Entry<String, Double> o1, Entry<String, Double> o2) {
+				if (o1.getValue() < o2.getValue()) {
+					return 1;
+				} else if (o1.getValue() > o2.getValue()) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		return rank;
 	}
 
 }

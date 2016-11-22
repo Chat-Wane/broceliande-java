@@ -1,6 +1,7 @@
 package net.adrouet.broceliande.algo;
 
 import net.adrouet.broceliande.struct.DataSet;
+import net.adrouet.broceliande.struct.DecisionTreeIterator;
 import net.adrouet.broceliande.struct.IData;
 import net.adrouet.broceliande.struct.Node;
 import net.adrouet.broceliande.struct.SubDataSets;
@@ -9,10 +10,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
+public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implements Iterable<Node<R>> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(DecisionTree.class);
 
@@ -81,13 +83,14 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
 			n.getKey().setRight(nRight);
 
-			LOG.trace("New Nodes: [{}][{}]",subDataSets.getLeft().getL_t().size(), subDataSets.getRight().getL_t().size());
+			LOG.trace("New Nodes: [{}][{}]", subDataSets.getLeft().getL_t().size(),
+					subDataSets.getRight().getL_t().size());
 
 		}
 
 		long endTime = System.currentTimeMillis();
-		LOG.debug("Decision tree: end in {} ms with {} leaves and depth {}",
-				endTime - startTime, this.nbLeaf, this.maxDepth);
+		LOG.debug("Decision tree: end in {} ms with {} leaves and depth {}", endTime - startTime, this.nbLeaf,
+				this.maxDepth);
 	}
 
 	private void toLeaf(Pair<Node<R>, DataSet<D, R>> n) {
@@ -106,4 +109,8 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> {
 		return currentNode.getResult();
 	}
 
+	@Override
+	public Iterator<Node<R>> iterator() {
+		return new DecisionTreeIterator<R>(this.root);
+	}
 }

@@ -42,8 +42,8 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 		Double delta = Double.NEGATIVE_INFINITY;
 		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
 		// #1 draw random getters from the features
+		Collections.shuffle(randomP);
 		while (randomP.size() > k) {
-			Collections.shuffle(randomP);
 			randomP.remove(randomP.size() - 1);
 		}
 		for (Method X_j : randomP) {

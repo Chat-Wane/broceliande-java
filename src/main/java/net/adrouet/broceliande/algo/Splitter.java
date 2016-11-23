@@ -13,6 +13,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static net.adrouet.broceliande.util.InspectionUtils.invokeGetter;
+import static net.adrouet.broceliande.util.InspectionUtils.invokeGetterForNumber;
+
 public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Splitter.class);
@@ -67,30 +70,21 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 		// #1 initialize the statistics for t_R to i(t)
 		// t_R: the right child of node t
-		Occurrences<D,R> occ_R = new Occurrences<>(dataSet.getJ());
+		Occurrences<D, R> occ_R = new Occurrences<>(dataSet.getJ());
 		// #A fill the right node with all data
 		dataSet.getL_t().forEach(occ_R::add);
 
 		// #2 initialize the statistics for t_L to 0
 		// t_L: the left child of node t
-		Occurrences<D,R> occ_L = new Occurrences<>(dataSet.getJ());
+		Occurrences<D, R> occ_L = new Occurrences<>(dataSet.getJ());
 
 		// #3 initialize i(t)
 		// i(t): the impurity of node t
 		Double it = impurityG(occ_R.getOccurrences(), dataSet.getL_t().size());
 
 		// #4 sort the sample L_t using the comparator on X_j returned values
-		Comparator<IData> comparator = (x1, x2) -> {
-			try {
-				Comparable x1j = (Comparable) X_j.invoke(x1);
-				Comparable x2j = (Comparable) X_j.invoke(x2);
-				return x1j.compareTo(x2j);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return 0;
-		};
+		Comparator<IData> comparator = (x1, x2) ->
+			invokeGetter(x1, X_j).compareTo(invokeGetter(x2, X_j));
 		Collections.sort(dataSet.getL_t(), comparator);
 
 		// #5 loop over the sample of t
@@ -107,44 +101,32 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 			occ_R.remove(L_t.get(i));
 			++i;
 			if (i < N_t) {
-				try {
-					// ∆i(s, t): the impurity decrease of split s at node t
-					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
-					Double p_L = occ_L.getTotal() / ((double) L_t.size());
-					Double p_R = occ_R.getTotal() / ((double) L_t.size());
-					Double delta_iOfv_kplus1 = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
-							- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
 
-					Predicate<IData> p;
-					if (InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL)) {
-						Integer meow = i;
-						p = data -> comparator.compare(data, L_t.get(meow)) == 0;
-						occ_R.addFrom(occ_L);
-						occ_L.reset();
-					} else {
-						// v'_k: the mid-cut point between v_k and v_k+1
-						Double vPrime_kplus1 = average((Number) X_j.invoke(L_t.get(i)),
-								(Number) X_j.invoke(L_t.get(i - 1)));
-						p = data -> {
-							try {
-								return ((Number) X_j.invoke(data)).doubleValue() < vPrime_kplus1;
-							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-								throw new RuntimeException("Getter on ordered feature not returning Number");
-							}
-						};
-					}
+				// ∆i(s, t): the impurity decrease of split s at node t
+				// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
+				Double p_L = occ_L.getTotal() / ((double) L_t.size());
+				Double p_R = occ_R.getTotal() / ((double) L_t.size());
+				Double delta_iOfv_kplus1 = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
+						- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
 
-					if (delta_iOfv_kplus1 > delta) {
-						delta = delta_iOfv_kplus1;
-						vstar_j = new BestSplit(X_j, p, delta_iOfv_kplus1);
-					}
+				Predicate<IData> p;
+				if (InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL)) {
+					Integer meow = i;
+					p = data -> comparator.compare(data, L_t.get(meow)) == 0;
+					occ_R.addFrom(occ_L);
+					occ_L.reset();
+				} else {
+					// v'_k: the mid-cut point between v_k and v_k+1
+					Double vPrime_kplus1 = average(invokeGetterForNumber(L_t.get(i), X_j),
+							 invokeGetterForNumber(L_t.get(i - 1), X_j));
+					p = data -> (invokeGetterForNumber(data, X_j)).doubleValue() < vPrime_kplus1;
+				}
 
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (delta_iOfv_kplus1 > delta) {
+					delta = delta_iOfv_kplus1;
+					vstar_j = new BestSplit(X_j, p, delta_iOfv_kplus1);
 				}
 			}
-
 		}
 
 		return vstar_j;

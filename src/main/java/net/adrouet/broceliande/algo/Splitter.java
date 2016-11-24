@@ -8,7 +8,6 @@ import net.adrouet.broceliande.util.InspectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
@@ -164,7 +163,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 		Double impurity = 0.;
 		for (D x : dataSet.getL_t()) {
 			// (XXX) Ugly as hell
-			sum = sum.doubleValue() + ((Number) x.getResult()).doubleValue();
+			sum = sum + ((Number) x.getResult()).doubleValue();
 		}
 		Double average = sum / N_t.doubleValue();
 		for (IData x : dataSet.getL_t()) {

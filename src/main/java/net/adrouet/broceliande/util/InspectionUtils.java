@@ -7,7 +7,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ public abstract class InspectionUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(InspectionUtils.class);
 
 	public static <T> Set<Method> findFeatures(Class<T> t) {
-		return new HashSet(Arrays.asList(MethodUtils.getMethodsWithAnnotation(t, Feature.class)));
+		return new HashSet<>(Arrays.asList(MethodUtils.getMethodsWithAnnotation(t, Feature.class)));
 	}
 
 	public static <T> Method findTarget(Class<T> t) {

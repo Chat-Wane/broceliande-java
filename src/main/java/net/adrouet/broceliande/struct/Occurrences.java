@@ -14,7 +14,7 @@ public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 	public Occurrences(Set<R> ts) {
 		for (R t : ts) {
 			this.targets.add(t);
-			this.occurrences.add(new Integer(0));
+			this.occurrences.add(0);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 
 	public void reset() {
 		for (int i = 0; i < this.occurrences.size(); ++i) {
-			this.occurrences.set(i, new Integer(0));
+			this.occurrences.set(i, 0);
 		}
 		this.total = 0;
 	}

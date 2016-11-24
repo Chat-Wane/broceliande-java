@@ -19,13 +19,13 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 	private final static Logger LOG = LoggerFactory.getLogger(DecisionTree.class);
 
 	private Node<R> root;
-	private Splitter splitter;
+	private Splitter<D,R> splitter;
 	private Parameter params;
 
 	private int nbLeaf = 0;
 	private int maxDepth = 0;
 
-	public DecisionTree(Splitter splitter, Parameter params) {
+	public DecisionTree(Splitter<D,R> splitter, Parameter params) {
 		this.splitter = splitter;
 		this.params = params;
 	}
@@ -111,6 +111,6 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 
 	@Override
 	public Iterator<Node<R>> iterator() {
-		return new DecisionTreeIterator<R>(this.root);
+		return new DecisionTreeIterator<>(this.root);
 	}
 }

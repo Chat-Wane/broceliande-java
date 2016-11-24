@@ -1,6 +1,5 @@
 package net.adrouet.broceliande.struct;
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,11 +13,11 @@ import net.adrouet.broceliande.util.InspectionUtils;
 
 public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 
-	private Class<D> dataClass;
+	private Class<?> dataClass;
 	private List<D> data;
 	private Set<Method> p;
 
-	public DataSet(Class<D> cl) {
+	public DataSet(Class<?> cl) {
 		this.p = InspectionUtils.findFeatures(cl);
 		this.dataClass = cl;
 	}
@@ -60,7 +59,7 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	 *            the cutting point
 	 * @return
 	 */
-	public SubDataSets split(Predicate<IData> cut) {
+	public SubDataSets<D,R> split(Predicate<IData> cut) {
 		List<D> left = new ArrayList<>();
 		List<D> right = new ArrayList<>();
 		getL_t().forEach(d -> {
@@ -71,16 +70,16 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 			}
 		});
 
-		DataSet leftDataSet = new DataSet<>(dataClass);
+		DataSet<D,R> leftDataSet = new DataSet<>(dataClass);
 		leftDataSet.setData(left);
-		DataSet rightDataSet = new DataSet<>(dataClass);
+		DataSet<D,R> rightDataSet = new DataSet<>(dataClass);
 		rightDataSet.setData(right);
-		return new SubDataSets(leftDataSet, rightDataSet);
+		return new SubDataSets<>(leftDataSet, rightDataSet);
 
 	}
 
 	public R getDominantResult() {
-		Map<R, Long> count = data.stream().collect(Collectors.groupingBy(d -> d.getResult(), Collectors.counting()));
+		Map<R, Long> count = data.stream().collect(Collectors.groupingBy(IData::getResult, Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 

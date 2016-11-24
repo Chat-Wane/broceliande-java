@@ -19,20 +19,19 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	private final static Logger LOG = LoggerFactory.getLogger(RandomForest.class);
 	private List<DecisionTree<D, R>> decisionTrees;
 	private Splitter<D, R> splitter;
-	private Bagging bagging;
+	private Bagging<D> bagging;
 	private Parameter p;
 
 	/**
 	 * Init RF with all parameter
 	 *
-	 * @param p
-	 *            params
+	 * @param p params
 	 */
 	public RandomForest(Parameter p) {
 		LOG.debug("Initializing Random Forest : {}", p);
 		this.decisionTrees = new ArrayList<>();
-		this.splitter = new Splitter(p.getK(), p.getRandom());
-		this.bagging = new Bagging(p.getRandom());
+		this.splitter = new Splitter<>(p.getK(), p.getRandom());
+		this.bagging = new Bagging<>(p.getRandom());
 		this.p = p;
 	}
 
@@ -47,9 +46,9 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		// #1 Bagging
 		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {
 			// #2 Build all decision tree
-			DecisionTree decisionTree = new DecisionTree(splitter, this.p);
+			DecisionTree<D, R> decisionTree = new DecisionTree<>(splitter, this.p);
 			// XXX
-			DataSet ds = new DataSet<>(sample.get(0).getClass());
+			DataSet<D, R> ds = new DataSet<>(sample.get(0).getClass());
 			ds.setData(sample);
 			decisionTree.compute(ds);
 			decisionTrees.add(decisionTree);
@@ -70,7 +69,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		for (DecisionTree<D, R> tree : this.decisionTrees) {
 			R vote = tree.predict(data);
 			if (!votes.containsKey(vote)) {
-				votes.put(vote, new Integer(0));
+				votes.put(vote, 0);
 			}
 			votes.put(vote, votes.get(vote) + 1);
 		}
@@ -81,13 +80,13 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 				dominant = vote;
 			}
 		}
-		LOG.trace("Predict vote result: {}", votes );
-		return dominant.getKey();
+		LOG.trace("Predict vote result: {}", votes);
+		return dominant != null ? dominant.getKey() : null;
 	}
 
 	/**
 	 * rank the features by their importance
-	 * 
+	 *
 	 * @return
 	 */
 	public List<ImmutablePair<String, Double>> importance() {
@@ -107,12 +106,10 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 			}
 		}
 		// #2 sort the collection
-		List<ImmutablePair<String, Double>> rank = sums.entrySet().stream()
+		return sums.entrySet().stream()
 				.map(elt -> new ImmutablePair<>(elt.getKey(), elt.getValue().right / elt.getValue().left))
 				.sorted((a, b) -> b.getValue().compareTo(a.getValue()))
 				.collect(Collectors.toList());
-
-		return rank;
 	}
 
 }

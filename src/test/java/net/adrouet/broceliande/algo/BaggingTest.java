@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,8 @@ public class BaggingTest {
 			list.add(i);
 		}
 
-		Bagging b = new Bagging();
+
+		Bagging b = new Bagging(new Random());
 		List<List<Integer>> result = b.generateSamples(list,10);
 		assertEquals(10, result.size());
 		for (List<Integer> l : result) {

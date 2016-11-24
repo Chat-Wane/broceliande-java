@@ -1,12 +1,14 @@
 package net.adrouet.broceliande.algo;
 
+import net.adrouet.broceliande.struct.IData;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Bagging {
+public class Bagging<D extends IData<?>> {
 
 	private Random random;
 
@@ -14,17 +16,17 @@ public class Bagging {
 		this.random = random;
 	}
 
-	public <T> List<List<T>> generateSamples(List<T> data, int nbSample) {
+	public List<List<D>> generateSamples(List<D> data, int nbSample) {
 		return this.getStream(data).limit(nbSample).collect(Collectors.toList());
 	}
 
-	public <T> Stream<List<T>> getStream(List<T> data) {
+	public Stream<List<D>> getStream(List<D> data) {
 		return Stream.generate(() -> generateSample(data));
 	}
 
-	private <T> List<T> generateSample(List<T> data) {
+	private List<D> generateSample(List<D> data) {
 
-		List<T> sample = new ArrayList<>();
+		List<D> sample = new ArrayList<>();
 		for (int j = 0; j < data.size(); j++) {
 			sample.add(data.get(this.random.nextInt(data.size())));
 		}

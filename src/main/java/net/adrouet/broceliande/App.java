@@ -2,7 +2,6 @@ package net.adrouet.broceliande;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;

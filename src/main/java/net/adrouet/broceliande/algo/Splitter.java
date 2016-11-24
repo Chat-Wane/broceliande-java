@@ -88,7 +88,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 		Collections.sort(dataSet.getL_t(), comparator);
 
 		// #5 loop over the sample of t
-		Integer i = 0; // /!\ starts at 1 in the algorithm of the thesis
+		int i = 0; // /!\ starts at 1 in the algorithm of the thesis
 		List<D> L_t = dataSet.getL_t();
 		Integer N_t = L_t.size(); // N_t: the number of node samples in node t
 		while (i < N_t) {
@@ -111,8 +111,8 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 
 				Predicate<IData> p;
 				if (InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL)) {
-					Integer meow = i;
-					p = data -> comparator.compare(data, L_t.get(meow)) == 0;
+					D d = L_t.get(i);
+					p = data -> comparator.compare(data, d) == 0;
 					occ_R.addFrom(occ_L);
 					occ_L.reset();
 				} else {

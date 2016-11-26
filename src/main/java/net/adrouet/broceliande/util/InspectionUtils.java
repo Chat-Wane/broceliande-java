@@ -1,17 +1,18 @@
 package net.adrouet.broceliande.util;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import net.adrouet.broceliande.data.Feature;
 import net.adrouet.broceliande.data.FeatureType;
 import net.adrouet.broceliande.data.Target;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public abstract class InspectionUtils {
 
@@ -28,6 +29,23 @@ public abstract class InspectionUtils {
 	public static FeatureType getFeatureType(Method m) {
 		Feature annotation = m.getAnnotation(Feature.class);
 		return annotation.value();
+	}
+
+	public static <T> Map<String,Method> findSetter(Class<T> clazz){
+		try {
+			Map<String, Method> result = new HashMap<>();
+			BeanInfo info = Introspector.getBeanInfo(clazz);
+			PropertyDescriptor[] props = info.getPropertyDescriptors();
+			for (PropertyDescriptor prop : props) {
+				result.put(prop.getName().toLowerCase(), prop.getWriteMethod());
+			}
+			return result;
+
+		} catch (IntrospectionException e) {
+			LOG.error("Could not introspect class : {}", e.getMessage());
+			throw new RuntimeException("Could not introspect class",e);
+		}
+
 	}
 
 	public static Comparable invokeGetter(Object target, Method m) {

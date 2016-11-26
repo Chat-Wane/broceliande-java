@@ -5,75 +5,39 @@ import net.adrouet.broceliande.bean.Passenger;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class CsvUtils {
 
-	public static List<Passenger> csvToPassager(String filename) throws IOException {
+	public static <T> List<T> csvToBean(String filename, Class<T> clazz) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		String file = classloader.getResource(filename).getFile();
 		FileReader fReader = new FileReader(file);
 		CSVReader reader = new CSVReader(fReader);
 		String[] nextLine;
-		ArrayList<Passenger> result = new ArrayList<>();
-		reader.readNext(); // Ignore header
+		List<T> result = new ArrayList<>();
+		nextLine = reader.readNext(); // Ignore header
+		HashMap<Integer, Method> headers = new HashMap<>();
+		Map<String, Method> setters = InspectionUtils.findSetter(Passenger.class);
+		for (int i = 0; i < nextLine.length; i++) {
+			headers.put(i, setters.get(nextLine[i].toLowerCase()));
+		}
 
 		while ((nextLine = reader.readNext()) != null) {
-			Passenger p = new Passenger();
-			p.setPassengerId(getInteger(nextLine[0]));
-			p.setSurvived(getInteger(nextLine[1]));
-
-			Integer c = getInteger(nextLine[2]);
-			if (c == null) {
-				p.setPclass(3);
-			} else {
-				p.setPclass(c);
+			T t = clazz.newInstance();
+			for (int i = 0; i < nextLine.length; i++) {
+				Class<?> param = headers.get(i).getParameterTypes()[0];
+				if (param.equals(Integer.class)) {
+					headers.get(i).invoke(t, getInteger(nextLine[i]));
+				} else if (param.equals(Double.class)) {
+					headers.get(i).invoke(t, getDouble(nextLine[i]));
+				} else {
+					headers.get(i).invoke(t, nextLine[i]);
+				}
 			}
-
-			String name = nextLine[3];
-			p.setName(name);
-
-			if (name.matches(
-					".*Don.*|.*Lady.*|.*Countess.*|.*Capt.*|.*Col.*|.*Don.*|.*Dr.*|.*Major.*|.*Rev.*|.*Sir.*|.*Jonkheer.*")) {
-				p.setTitle("rare");
-			} else if (name.matches(".*Mlle.*|.*Ms.*")) {
-				p.setTitle("Miss");
-			} else if (name.matches(".*Mrs.*|.*Mme.*")) {
-				p.setTitle("Mrs");
-			} else {
-				p.setTitle("Mr");
-			}
-
-			p.setSex(nextLine[4]);
-
-			Integer age = getInteger(nextLine[5]);
-			if (age == null) {
-				p.setAge(23);
-			} else {
-				p.setAge(age);
-			}
-
-			p.setSibSp(getInteger(nextLine[6]));
-			p.setParch(getInteger(nextLine[7]));
-			p.setTicket(nextLine[8]);
-
-			Double fare = getDouble(nextLine[9]);
-			if (fare == null) {
-				p.setFare(8.05);
-			} else {
-				p.setFare(fare);
-			}
-
-			p.setCabin(nextLine[10]);
-
-			String embarked = nextLine[11];
-			if ((embarked == null) || (embarked.length() == 0)) {
-				p.setEmbarked("S");
-			} else {
-				p.setEmbarked(embarked);
-			}
-			result.add(p);
+			result.add(t);
 		}
 		return result;
 	}

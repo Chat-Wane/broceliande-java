@@ -1,6 +1,5 @@
 package net.adrouet.broceliande;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -16,26 +15,14 @@ public class App {
 
 	private static Logger LOG = LoggerFactory.getLogger(App.class);
 
-	public static void main(String[] args) {
-		// Do stuff one day
+	public static void main(String[] args) throws Exception {
+		List<Passenger> train = readPassager();
 
-		try {
-			readPassager();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public static void readPassager() throws IOException {
-		List<Passenger> train = CsvUtils.csvToPassager("train.csv");
-		// List<Passenger> test = CsvUtils.csvToPassager("test.csv");
 		Parameter p = new Parameter.Builder().build();
 		RandomForest<Passenger, Integer> forest = new RandomForest<>(p);
-		// System.out.println("Fit");
+
 		for (int i = 0; i < 10; ++i) {
 			forest.fit(train);
-			// System.out.println("Predict");
 			long count = train.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
 			LOG.info("Success rate: {}%", String.format("%.2f", count * 100 / (double) train.size()));
 		}
@@ -44,5 +31,35 @@ public class App {
 		for (ImmutablePair<String, Double> e : rank) {
 			LOG.info("Importance: feature {} - {}", String.format("%.3f", e.getRight()), e.getLeft());
 		}
+
+	}
+
+	public static List<Passenger> readPassager() throws Exception {
+		List<Passenger> train = CsvUtils.csvToBean("train.csv", Passenger.class);
+		fixMissingData(train);
+		return train;
+
+
+	}
+
+	private static void fixMissingData(List<Passenger> train) {
+		train.forEach(p -> {
+			if (p.getPclass() == null) p.setPclass(3);
+			if (p.getAge() == null) p.setAge(23);
+			if (p.getFare() == null) p.setFare(8.05);
+			if (p.getEmbarked() == null || p.getEmbarked().isEmpty()) p.setEmbarked("S");
+
+			String name = p.getName();
+			if (name.matches(
+					".*Don.*|.*Lady.*|.*Countess.*|.*Capt.*|.*Col.*|.*Don.*|.*Dr.*|.*Major.*|.*Rev.*|.*Sir.*|.*Jonkheer.*")) {
+				p.setTitle("rare");
+			} else if (name.matches(".*Mlle.*|.*Ms.*")) {
+				p.setTitle("Miss");
+			} else if (name.matches(".*Mrs.*|.*Mme.*")) {
+				p.setTitle("Mrs");
+			} else {
+				p.setTitle("Mr");
+			}
+		});
 	}
 }

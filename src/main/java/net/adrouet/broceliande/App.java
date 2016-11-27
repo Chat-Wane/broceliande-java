@@ -16,29 +16,34 @@ public class App {
 	private static Logger LOG = LoggerFactory.getLogger(App.class);
 
 	public static void main(String[] args) throws Exception {
-		List<Passenger> train = readPassager();
+		List<Passenger> train = readPassager("train.csv");
 
-		Parameter p = new Parameter.Builder().build();
-		RandomForest<Passenger, Integer> forest = new RandomForest<>(p);
+		Parameter param = new Parameter.Builder().nbTrees(200).maxFeatures(3).build();
+		RandomForest<Passenger, Integer> forest = new RandomForest<>(param);
 
-		for (int i = 0; i < 10; ++i) {
-			forest.fit(train);
-			long count = train.stream().filter(pa -> forest.predict(pa).equals(pa.getResult())).count();
-			LOG.info("Success rate: {}%", String.format("%.2f", count * 100 / (double) train.size()));
-		}
+		forest.fit(train);
+		long count = train.stream()
+				.filter(pa -> forest.predict(pa).equals(pa.getResult()))
+				.count();
+		LOG.info("Success rate: {}%", String.format("%.2f", count * 100 / (double) train.size()));
 
 		List<ImmutablePair<String, Double>> rank = forest.importance();
 		for (ImmutablePair<String, Double> e : rank) {
 			LOG.info("Importance: feature {} - {}", String.format("%.3f", e.getRight()), e.getLeft());
 		}
 
+		LOG.info("Running test set");
+		List<Passenger> test = readPassager("test.csv");
+		test.forEach(p ->{
+			p.setSurvived(forest.predict(p));
+		});
+		CsvUtils.writeResult(test);
 	}
 
-	public static List<Passenger> readPassager() throws Exception {
-		List<Passenger> train = CsvUtils.csvToBean("train.csv", Passenger.class);
+	public static List<Passenger> readPassager(String filename) throws Exception {
+		List<Passenger> train = CsvUtils.csvToBean(filename, Passenger.class);
 		fixMissingData(train);
 		return train;
-
 
 	}
 

@@ -2,14 +2,31 @@ package net.adrouet.broceliande.util;
 
 import com.opencsv.CSVReader;
 import net.adrouet.broceliande.bean.Passenger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class CsvUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CsvUtils.class);
+
+	public static void writeResult(List<Passenger> passengerList) throws IOException {
+		File file = new File("result.csv");
+		LOG.info("Writing result in {}", file.getAbsolutePath());
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.write("PassengerId,Survived\n");
+		for (Passenger p : passengerList) {
+			fileWriter.write(p.getPassengerId() + "," + p.getResult() + "\n");
+		}
+		fileWriter.close();
+	}
 
 	public static <T> List<T> csvToBean(String filename, Class<T> clazz) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();

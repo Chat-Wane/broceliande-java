@@ -1,9 +1,9 @@
-package net.adrouet.broceliande.bean;
+package net.korriganed.broceliande.bean;
 
-import net.adrouet.broceliande.data.Feature;
-import net.adrouet.broceliande.data.FeatureType;
-import net.adrouet.broceliande.data.Target;
-import net.adrouet.broceliande.struct.IData;
+import net.korriganed.broceliande.data.Feature;
+import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.data.Target;
+import net.korriganed.broceliande.struct.IData;
 
 public class Passenger implements IData<Integer> {
 

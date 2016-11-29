@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
 public interface IData<R extends Comparable<R>> {
 

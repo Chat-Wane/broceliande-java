@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.adrouet.broceliande.util.InspectionUtils;
+import net.korriganed.broceliande.util.InspectionUtils;
 
 public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 

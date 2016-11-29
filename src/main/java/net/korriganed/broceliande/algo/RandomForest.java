@@ -1,12 +1,13 @@
-package net.adrouet.broceliande.algo;
+package net.korriganed.broceliande.algo;
 
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.IData;
-import net.adrouet.broceliande.struct.Node;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.korriganed.broceliande.struct.DataSet;
+import net.korriganed.broceliande.struct.IData;
+import net.korriganed.broceliande.struct.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;

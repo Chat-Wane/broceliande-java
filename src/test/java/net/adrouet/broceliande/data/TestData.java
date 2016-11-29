@@ -1,6 +1,9 @@
 package net.adrouet.broceliande.data;
 
-import net.adrouet.broceliande.struct.IData;
+import net.korriganed.broceliande.data.Feature;
+import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.data.Target;
+import net.korriganed.broceliande.struct.IData;
 
 public class TestData implements IData {
 

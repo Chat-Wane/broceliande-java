@@ -1,19 +1,20 @@
-package net.adrouet.broceliande.algo;
+package net.korriganed.broceliande.algo;
 
-import net.adrouet.broceliande.data.FeatureType;
-import net.adrouet.broceliande.struct.DataSet;
-import net.adrouet.broceliande.struct.IData;
-import net.adrouet.broceliande.struct.Occurrences;
-import net.adrouet.broceliande.util.InspectionUtils;
+import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.struct.DataSet;
+import net.korriganed.broceliande.struct.IData;
+import net.korriganed.broceliande.struct.Occurrences;
+import net.korriganed.broceliande.util.InspectionUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static net.korriganed.broceliande.util.InspectionUtils.invokeGetter;
+import static net.korriganed.broceliande.util.InspectionUtils.invokeGetterForNumber;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
-
-import static net.adrouet.broceliande.util.InspectionUtils.invokeGetter;
-import static net.adrouet.broceliande.util.InspectionUtils.invokeGetterForNumber;
 
 public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 

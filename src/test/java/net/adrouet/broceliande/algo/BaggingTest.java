@@ -2,6 +2,8 @@ package net.adrouet.broceliande.algo;
 
 import org.junit.Test;
 
+import net.korriganed.broceliande.algo.Bagging;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

@@ -1,6 +1,8 @@
 package net.adrouet.broceliande.util;
 
 import net.adrouet.broceliande.data.TestData;
+import net.korriganed.broceliande.util.InspectionUtils;
+
 import org.junit.Test;
 
 import java.lang.reflect.Method;

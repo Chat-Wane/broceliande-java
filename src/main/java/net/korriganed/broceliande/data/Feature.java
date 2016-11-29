@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.data;
+package net.korriganed.broceliande.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

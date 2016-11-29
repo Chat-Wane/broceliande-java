@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
 public class SubDataSets<D extends IData<R>, R extends Comparable<R>> {
 

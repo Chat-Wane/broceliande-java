@@ -6,8 +6,10 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import net.adrouet.broceliande.algo.BestSplit;
 import net.adrouet.broceliande.data.TestData;
+import net.korriganed.broceliande.algo.BestSplit;
+import net.korriganed.broceliande.struct.IData;
+import net.korriganed.broceliande.struct.Node;
 
 public class NodeTest {
 

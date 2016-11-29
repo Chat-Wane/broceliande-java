@@ -1,9 +1,9 @@
-package net.adrouet.broceliande.algo;
-
-import net.adrouet.broceliande.struct.IData;
+package net.korriganed.broceliande.algo;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
+
+import net.korriganed.broceliande.struct.IData;
 
 public class BestSplit {
 

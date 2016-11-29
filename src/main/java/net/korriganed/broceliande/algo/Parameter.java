@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.algo;
+package net.korriganed.broceliande.algo;
 
 import java.util.Random;
 

@@ -1,9 +1,10 @@
-package net.adrouet.broceliande.util;
+package net.korriganed.broceliande.util;
 
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
-import net.adrouet.broceliande.data.Feature;
-import net.adrouet.broceliande.data.FeatureType;
-import net.adrouet.broceliande.data.Target;
+import net.korriganed.broceliande.data.Feature;
+import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.data.Target;
+
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;

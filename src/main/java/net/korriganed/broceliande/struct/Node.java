@@ -1,6 +1,6 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
-import net.adrouet.broceliande.algo.BestSplit;
+import net.korriganed.broceliande.algo.BestSplit;
 
 public class Node<R extends Comparable<R>> {
 

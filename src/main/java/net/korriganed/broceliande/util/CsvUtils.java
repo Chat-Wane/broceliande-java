@@ -1,7 +1,9 @@
-package net.adrouet.broceliande.util;
+package net.korriganed.broceliande.util;
 
 import com.opencsv.CSVReader;
-import net.adrouet.broceliande.bean.Passenger;
+
+import net.korriganed.broceliande.bean.Passenger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

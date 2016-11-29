@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -57,6 +57,17 @@ Constructor of the random forest.
 Train the random forest using a list of tuples ```D```. The latter type extends
 ```IData<R>``` which enforces the presence of the function ```getResult() : R```.
 
+This function only takes into account the getters of ```D``` that are annotated
+with a ```Feature``` which is either ```ORDERED``` or ```CATEGORICAL```.
+
+```java
+// Annotation example
+@Feature(FeatureType.ORDERED)
+  public Integer getAge() {
+    return age;
+}
+```
+
 #### ```RandomForest.predict(D) : R```
 
 Predict the result ```R``` according to the data ```D```.

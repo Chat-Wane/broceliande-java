@@ -24,7 +24,7 @@ int nbTrees = 10;
 Long seed = null;
 ```
 
-#### ```new Paramater.Builder() : Builder```
+#### ```new Parameter.Builder() : Builder```
 
 Return a builder to setup the parameters of the random forest. The available
 functions to update the default values are :

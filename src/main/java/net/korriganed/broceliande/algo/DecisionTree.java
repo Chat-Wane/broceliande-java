@@ -72,7 +72,7 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 			// Set t as a terminal node if there is no split such that tL and
 			// tR both count a least MinSampleLeaf samples (f)
 			if (subDataSets.getLeft().getL_t().size() < this.params.getMinSampleLeaf()
-					|| subDataSets.getLeft().getL_t().size() < this.params.getMinSampleLeaf()) {
+					|| subDataSets.getRight().getL_t().size() < this.params.getMinSampleLeaf()) {
 				toLeaf(n);
 				continue;
 			}
@@ -113,5 +113,13 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 	@Override
 	public Iterator<Node<R>> iterator() {
 		return new DecisionTreeIterator<>(this.root);
+	}
+
+	@Override
+	public String toString() {
+		return "DecisionTree{" +
+				"nbLeaf=" + nbLeaf +
+				", maxDepth=" + maxDepth +
+				'}';
 	}
 }

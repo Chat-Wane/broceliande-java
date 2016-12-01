@@ -11,7 +11,70 @@ which is unknown, random forests are able to predict the corresponding result.
 
 ### Parameter
 
+The parameters that will be used to build random forests. The default values are
+:
+
+```java
+int minSamplesSplit = 2;
+int maxDepth = Integer.MAX_VALUE;
+double minImpurityDecrease = 1e-07;
+int minSampleLeaf = 1;
+int maxFeatures = Integer.MAX_VALUE;
+int nbTrees = 10;
+Long seed = null;
+```
+
+#### ```new Parameter.Builder() : Builder```
+
+Return a builder to setup the parameters of the random forest. The available
+functions to update the default values are :
+
+##### ```Builder.minSamplesSplit(int) : Builder``` </li>
+##### ```Builder.maxDepth(int) : Builder``` </li>
+##### ```Builder.minImpurityDecrease(double)``` : Builder </li>
+##### ```Builder.minSampleLeaf(int) : Builder``` </li>
+##### ```Builder.maxFeatures(int) : Builder``` </li>
+##### ```Builder.seed(Long) : Builder``` </li>
+##### ```Builder.nbTrees(int) : Builder``` </li>
+##### ```Builder.build() : Parameter``` </li>
+
+```java
+// Builder example
+Parameter p = new Parameter.Builder()
+                     .nbTrees(200)
+                     .maxFeatures(3)
+                     .build();
+```
+
 ### RandomForest
+
+#### ```new RandomForest(Parameter) : RandomForest```
+
+Constructor of the random forest.
+
+#### ```RandomForest.fit(List<D>)```
+
+Train the random forest using a list of tuples ```D```. The latter type extends
+```IData<R>``` which enforces the presence of the function ```getResult() : R```.
+
+This function only takes into account the getters of ```D``` that are annotated
+with a ```Feature``` which is either ```ORDERED``` or ```CATEGORICAL```.
+
+```java
+// Annotation example
+@Feature(FeatureType.ORDERED)
+  public Integer getAge() {
+    return age;
+}
+```
+
+#### ```RandomForest.predict(D) : R```
+
+Predict the result ```R``` according to the data ```D```.
+
+#### ```RandomForest.importance() : List<ImmutablePair<String, Double>>```
+
+Get the list of features sorted by decreasing importance.
 
 ## Example
 

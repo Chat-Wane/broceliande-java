@@ -6,9 +6,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.korriganed.broceliande.struct.IData;
-
-public class Bagging<D extends IData<?>> {
+public class Bagging<D> {
 
 	private Random random;
 

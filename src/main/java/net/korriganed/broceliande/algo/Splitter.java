@@ -1,22 +1,25 @@
 package net.korriganed.broceliande.algo;
 
-import net.korriganed.broceliande.data.FeatureType;
-import net.korriganed.broceliande.struct.DataSet;
-import net.korriganed.broceliande.struct.IData;
-import net.korriganed.broceliande.struct.Occurrences;
-import net.korriganed.broceliande.util.InspectionUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static net.korriganed.broceliande.util.InspectionUtils.invokeGetter;
 import static net.korriganed.broceliande.util.InspectionUtils.invokeGetterForNumber;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
-public class Splitter<D extends IData<R>, R extends Comparable<R>> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.struct.DataSet;
+import net.korriganed.broceliande.struct.Occurrences;
+import net.korriganed.broceliande.util.InspectionUtils;
+
+public class Splitter<D, R> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Splitter.class);
 
@@ -61,8 +64,10 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 	/**
 	 * See page 50 of LOUPPE's thesis about random forests
 	 *
-	 * @param dataSet the subset of node samples falling into node t (contains L_t)
-	 * @param X_j     the j-th input variable or feature (getter)
+	 * @param dataSet
+	 *            the subset of node samples falling into node t (contains L_t)
+	 * @param X_j
+	 *            the j-th input variable or feature (getter)
 	 */
 	public BestSplit findBestSplit(DataSet<D, R> dataSet, Method X_j) {
 		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
@@ -83,8 +88,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 		Double it = impurityG(occ_R.getOccurrences(), dataSet.getL_t().size());
 
 		// #4 sort the sample L_t using the comparator on X_j returned values
-		Comparator<IData> comparator = (x1, x2) ->
-			invokeGetter(x1, X_j).compareTo(invokeGetter(x2, X_j));
+		Comparator<D> comparator = (x1, x2) -> invokeGetter(x1, X_j).compareTo(invokeGetter(x2, X_j));
 		Collections.sort(dataSet.getL_t(), comparator);
 
 		// #5 loop over the sample of t
@@ -109,7 +113,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 				Double delta_iOfv_kplus1 = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
 						- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
 
-				Predicate<IData> p;
+				Predicate<D> p;
 				if (InspectionUtils.getFeatureType(X_j).equals(FeatureType.CATEGORICAL)) {
 					D d = L_t.get(i);
 					p = data -> comparator.compare(data, d) == 0;
@@ -118,7 +122,7 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 				} else {
 					// v'_k: the mid-cut point between v_k and v_k+1
 					Double vPrime_kplus1 = average(invokeGetterForNumber(L_t.get(i), X_j),
-							 invokeGetterForNumber(L_t.get(i - 1), X_j));
+							invokeGetterForNumber(L_t.get(i - 1), X_j));
 					p = data -> (invokeGetterForNumber(data, X_j)).doubleValue() < vPrime_kplus1;
 				}
 
@@ -164,11 +168,11 @@ public class Splitter<D extends IData<R>, R extends Comparable<R>> {
 		Double impurity = 0.;
 		for (D x : dataSet.getL_t()) {
 			// (XXX) Ugly as hell
-			sum = sum + ((Number) x.getResult()).doubleValue();
+			sum = sum + ((Number) InspectionUtils.invokeTarget(x)).doubleValue();
 		}
 		Double average = sum / N_t.doubleValue();
-		for (IData x : dataSet.getL_t()) {
-			impurity += Math.pow(((Number) x.getResult()).doubleValue() - average, 2);
+		for (D x : dataSet.getL_t()) {
+			impurity += Math.pow(((Number) InspectionUtils.invokeTarget(x)).doubleValue() - average, 2);
 		}
 		impurity = impurity / N_t.doubleValue();
 		return impurity;

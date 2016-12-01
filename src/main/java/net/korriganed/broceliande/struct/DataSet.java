@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import net.korriganed.broceliande.util.InspectionUtils;
 
-public class DataSet<D extends IData<R>, R extends Comparable<R>> {
+public class DataSet<D, R> {
 
 	private Class<?> dataClass;
 	private List<D> data;
@@ -26,7 +26,7 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	 * @return set of possible results
 	 */
 	public Set<R> getJ() {
-		return data.stream().map(IData::getResult).distinct().collect(Collectors.toSet());
+		return data.stream().map(d -> (R) InspectionUtils.invokeTarget(d)).distinct().collect(Collectors.toSet());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 	 *            the cutting point
 	 * @return
 	 */
-	public SubDataSets<D,R> split(Predicate<IData> cut) {
+	public SubDataSets<D, R> split(Predicate<D> cut) {
 		List<D> left = new ArrayList<>();
 		List<D> right = new ArrayList<>();
 		getL_t().forEach(d -> {
@@ -70,16 +70,17 @@ public class DataSet<D extends IData<R>, R extends Comparable<R>> {
 			}
 		});
 
-		DataSet<D,R> leftDataSet = new DataSet<>(dataClass);
+		DataSet<D, R> leftDataSet = new DataSet<>(dataClass);
 		leftDataSet.setData(left);
-		DataSet<D,R> rightDataSet = new DataSet<>(dataClass);
+		DataSet<D, R> rightDataSet = new DataSet<>(dataClass);
 		rightDataSet.setData(right);
 		return new SubDataSets<>(leftDataSet, rightDataSet);
 
 	}
 
 	public R getDominantResult() {
-		Map<R, Long> count = data.stream().collect(Collectors.groupingBy(IData::getResult, Collectors.counting()));
+		Map<R, Long> count = data.stream()
+				.collect(Collectors.groupingBy(InspectionUtils::invokeTarget, Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 

@@ -1,5 +1,9 @@
 package net.korriganed.broceliande.algo;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -7,26 +11,21 @@ import org.slf4j.LoggerFactory;
 
 import net.korriganed.broceliande.struct.DataSet;
 import net.korriganed.broceliande.struct.DecisionTreeIterator;
-import net.korriganed.broceliande.struct.IData;
 import net.korriganed.broceliande.struct.Node;
 import net.korriganed.broceliande.struct.SubDataSets;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-
-public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implements Iterable<Node<R>> {
+public class DecisionTree<D, R> implements Iterable<Node<D, R>> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(DecisionTree.class);
 
-	private Node<R> root;
-	private Splitter<D,R> splitter;
+	private Node<D, R> root;
+	private Splitter<D, R> splitter;
 	private Parameter params;
 
 	private int nbLeaf = 0;
 	private int maxDepth = 0;
 
-	public DecisionTree(Splitter<D,R> splitter, Parameter params) {
+	public DecisionTree(Splitter<D, R> splitter, Parameter params) {
 		this.splitter = splitter;
 		this.params = params;
 	}
@@ -35,11 +34,11 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 		LOG.info("Computing decision tree");
 		long startTime = System.currentTimeMillis();
 
-		Queue<Pair<Node<R>, DataSet<D, R>>> nodeToCompute = new LinkedList<>();
+		Queue<Pair<Node<D, R>, DataSet<D, R>>> nodeToCompute = new LinkedList<>();
 		this.root = new Node<>();
 		nodeToCompute.add(new ImmutablePair<>(this.root, dataSet));
 
-		Pair<Node<R>, DataSet<D, R>> n;
+		Pair<Node<D, R>, DataSet<D, R>> n;
 		BestSplit split;
 		while (!nodeToCompute.isEmpty()) {
 			n = nodeToCompute.poll();
@@ -76,11 +75,11 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 				toLeaf(n);
 				continue;
 			}
-			Node<R> nLeft = new Node<>(n.getKey().getDepth() + 1);
+			Node<D, R> nLeft = new Node<>(n.getKey().getDepth() + 1);
 			nodeToCompute.add(new ImmutablePair<>(nLeft, subDataSets.getLeft()));
 			n.getKey().setLeft(nLeft);
 
-			Node<R> nRight = new Node<>(n.getKey().getDepth() + 1);
+			Node<D, R> nRight = new Node<>(n.getKey().getDepth() + 1);
 			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
 			n.getKey().setRight(nRight);
 
@@ -94,7 +93,7 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 				this.maxDepth);
 	}
 
-	private void toLeaf(Pair<Node<R>, DataSet<D, R>> n) {
+	private void toLeaf(Pair<Node<D, R>, DataSet<D, R>> n) {
 		n.getKey().setResult(n.getValue().getDominantResult());
 		this.nbLeaf++;
 		if (n.getKey().getDepth() > this.maxDepth) {
@@ -103,7 +102,7 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 	}
 
 	public R predict(D data) {
-		Node<R> currentNode = this.root;
+		Node<D, R> currentNode = this.root;
 		while (!currentNode.isLeaf()) {
 			currentNode = currentNode.getChild(data);
 		}
@@ -111,15 +110,12 @@ public class DecisionTree<D extends IData<R>, R extends Comparable<R>> implement
 	}
 
 	@Override
-	public Iterator<Node<R>> iterator() {
+	public Iterator<Node<D, R>> iterator() {
 		return new DecisionTreeIterator<>(this.root);
 	}
 
 	@Override
 	public String toString() {
-		return "DecisionTree{" +
-				"nbLeaf=" + nbLeaf +
-				", maxDepth=" + maxDepth +
-				'}';
+		return "DecisionTree{" + "nbLeaf=" + nbLeaf + ", maxDepth=" + maxDepth + '}';
 	}
 }

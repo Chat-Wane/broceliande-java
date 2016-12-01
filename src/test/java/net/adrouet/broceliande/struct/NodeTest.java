@@ -8,21 +8,20 @@ import org.junit.Test;
 
 import net.adrouet.broceliande.data.TestData;
 import net.korriganed.broceliande.algo.BestSplit;
-import net.korriganed.broceliande.struct.IData;
 import net.korriganed.broceliande.struct.Node;
 
 public class NodeTest {
 
 	@Test
 	public void testNodeTransition() {
-		Node<String> root = new Node<>();
+		Node<TestData, String> root = new Node<>();
 
-		Predicate<IData> isMale = t -> ((TestData) t).getGender().equals("M");
+		Predicate<TestData> isMale = t -> ((TestData) t).getGender().equals("M");
 		BestSplit splitIsMale = new BestSplit(null, isMale, null);
 
 		root.setSplit(splitIsMale);
 
-		Node<String> child = new Node<>();
+		Node<TestData, String> child = new Node<>();
 		child.setResult("YES");
 		root.setLeft(child);
 

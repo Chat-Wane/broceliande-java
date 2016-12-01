@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
+import net.korriganed.broceliande.util.InspectionUtils;
+
+public class Occurrences<D, R> {
 
 	private ArrayList<R> targets = new ArrayList<>();
 	private ArrayList<Integer> occurrences = new ArrayList<>();
@@ -20,8 +22,9 @@ public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 
 	public void add(D x) {
 		int i = 0;
+		R targetX = InspectionUtils.invokeTarget(x);
 		for (R target : this.targets) {
-			if (target.compareTo(x.getResult()) == 0) {
+			if (target.equals(targetX)) {
 				this.occurrences.set(i, this.occurrences.get(i) + 1);
 			}
 			++i;
@@ -32,7 +35,7 @@ public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 	public void addFrom(Occurrences<D, R> o) {
 		for (int i = 0; i < o.getTargets().size(); ++i) {
 			for (int j = 0; j < this.getTargets().size(); ++j) {
-				if (o.getTargets().get(i).compareTo(this.getTargets().get(j)) == 0) {
+				if (o.getTargets().get(i).equals(this.getTargets().get(j))) {
 					this.occurrences.set(j, this.occurrences.get(j) + o.getOccurrences().get(i));
 				}
 			}
@@ -42,8 +45,9 @@ public class Occurrences<D extends IData<R>, R extends Comparable<R>> {
 
 	public void remove(D x) {
 		int i = 0;
+		R targetX = InspectionUtils.invokeTarget(x);
 		for (R target : this.targets) {
-			if (target.compareTo(x.getResult()) == 0) {
+			if (target.equals(targetX)) {
 				this.occurrences.set(i, this.occurrences.get(i) - 1);
 			}
 			++i;

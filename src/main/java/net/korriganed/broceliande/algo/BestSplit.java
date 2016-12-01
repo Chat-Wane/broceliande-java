@@ -3,9 +3,7 @@ package net.korriganed.broceliande.algo;
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
 
-import net.korriganed.broceliande.struct.IData;
-
-public class BestSplit {
+public class BestSplit<D> {
 
 	/**
 	 * getter; X_t
@@ -15,14 +13,14 @@ public class BestSplit {
 	/**
 	 * mid cut point; v'_k
 	 */
-	private final Predicate<IData> cutPoint;
+	private final Predicate<D> cutPoint;
 
 	/**
 	 * maximum impurity decrease on X_t ∆i(s, t)
 	 */
 	private final Double impurityDecrease;
 
-	public BestSplit(Method feature, Predicate<IData> cutPoint, Double impurityDecrease) {
+	public BestSplit(Method feature, Predicate<D> cutPoint, Double impurityDecrease) {
 		this.feature = feature;
 		this.cutPoint = cutPoint;
 		this.impurityDecrease = impurityDecrease;
@@ -32,7 +30,7 @@ public class BestSplit {
 		return feature;
 	}
 
-	public Predicate<IData> getCutPoint() {
+	public Predicate<D> getCutPoint() {
 		return cutPoint;
 	}
 
@@ -46,9 +44,6 @@ public class BestSplit {
 
 	@Override
 	public String toString() {
-		return "BestSplit{" +
-				"feature=" + feature.getName() +
-				", impurityDecrease=" + impurityDecrease +
-				'}';
+		return "BestSplit{" + "feature=" + feature.getName() + ", impurityDecrease=" + impurityDecrease + '}';
 	}
 }

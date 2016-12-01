@@ -2,13 +2,13 @@ package net.korriganed.broceliande.struct;
 
 import net.korriganed.broceliande.algo.BestSplit;
 
-public class Node<R extends Comparable<R>> {
+public class Node<D, R> {
 
 	private String label;
 
-	private Node<R> left;
+	private Node<D, R> left;
 
-	private Node<R> right;
+	private Node<D, R> right;
 
 	private R result;
 
@@ -19,11 +19,11 @@ public class Node<R extends Comparable<R>> {
 	public Node() {
 	}
 
-	public Node(int depth){
+	public Node(int depth) {
 		this.depth = depth;
 	}
 
-	public Node<R> getChild(IData data) {
+	public Node<D, R> getChild(D data) {
 		if (this.split.getCutPoint().test(data)) {
 			return left;
 		} else
@@ -42,19 +42,19 @@ public class Node<R extends Comparable<R>> {
 		this.label = label;
 	}
 
-	public Node<R> getLeft() {
+	public Node<D, R> getLeft() {
 		return left;
 	}
 
-	public void setLeft(Node<R> left) {
+	public void setLeft(Node<D, R> left) {
 		this.left = left;
 	}
 
-	public Node<R> getRight() {
+	public Node<D, R> getRight() {
 		return right;
 	}
 
-	public void setRight(Node<R> right) {
+	public void setRight(Node<D, R> right) {
 		this.right = right;
 	}
 
@@ -69,7 +69,7 @@ public class Node<R extends Comparable<R>> {
 	public void setSplit(BestSplit split) {
 		this.split = split;
 	}
-	
+
 	public BestSplit getSplit() {
 		return split;
 	}

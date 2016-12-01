@@ -1,21 +1,20 @@
 package net.korriganed.broceliande.algo;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.korriganed.broceliande.struct.DataSet;
-import net.korriganed.broceliande.struct.IData;
-import net.korriganed.broceliande.struct.Node;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.korriganed.broceliande.struct.DataSet;
+import net.korriganed.broceliande.struct.Node;
+
+public class RandomForest<D, R> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(RandomForest.class);
 	private List<DecisionTree<D, R>> decisionTrees;
@@ -96,7 +95,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		HashMap<String, MutablePair<Integer, Double>> sums = new HashMap<>();
 		// #1 collect the impurity decreases
 		for (DecisionTree<D, R> tree : this.decisionTrees) {
-			for (Node<R> current : tree) {
+			for (Node<D, R> current : tree) {
 				if (!current.isLeaf()) {
 					String name = current.getSplit().getFeature().getName();
 					if (!sums.containsKey(name)) {

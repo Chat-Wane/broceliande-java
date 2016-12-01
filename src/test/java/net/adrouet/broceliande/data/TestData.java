@@ -3,9 +3,8 @@ package net.adrouet.broceliande.data;
 import net.korriganed.broceliande.data.Feature;
 import net.korriganed.broceliande.data.FeatureType;
 import net.korriganed.broceliande.data.Target;
-import net.korriganed.broceliande.struct.IData;
 
-public class TestData implements IData {
+public class TestData {
 
 	private String gender;
 	private Integer age;
@@ -44,8 +43,4 @@ public class TestData implements IData {
 		this.result = result;
 	}
 
-	@Override
-	public Comparable getResult() {
-		return result;
-	}
 }

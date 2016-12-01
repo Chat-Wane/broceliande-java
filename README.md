@@ -14,19 +14,20 @@ which is unknown, random forests are able to predict the corresponding result.
 The parameters that will be used to build random forests. The default values are
 :
 
-```
-		minSamplesSplit = 2;
-		maxDepth = Integer.MAX_VALUE;
-		minImpurityDecrease = 1e-07;
-		minSampleLeaf = 1;
-		maxFeatures = Integer.MAX_VALUE;
-		nbTrees = 10;
-		seed = null;
+```java
+int minSamplesSplit = 2;
+int maxDepth = Integer.MAX_VALUE;
+double minImpurityDecrease = 1e-07;
+int minSampleLeaf = 1;
+int maxFeatures = Integer.MAX_VALUE;
+int nbTrees = 10;
+Long seed = null;
 ```
 
 #### ```new Paramater.Builder() : Builder```
 
-Return a builder to setup the parameters of the random forest.
+Return a builder to setup the parameters of the random forest. The available
+functions to update the default values are :
 
 ##### ```Builder.minSamplesSplit(int) : Builder``` </li>
 ##### ```Builder.maxDepth(int) : Builder``` </li>
@@ -38,14 +39,31 @@ Return a builder to setup the parameters of the random forest.
 ##### ```Builder.build() : Parameter``` </li>
 
 ```java
-// Example
-   Parameter p = new Parameter.Builder()
-                       .nbTrees(200)
-                       .maxFeatures(3)
-                       .build();
+// Builder example
+Parameter p = new Parameter.Builder()
+                     .nbTrees(200)
+                     .maxFeatures(3)
+                     .build();
 ```
 
 ### RandomForest
+
+#### ```new RandomForest(Parameter) : RandomForest```
+
+Constructor of the random forest.
+
+#### ```RandomForest.fit(List<D>)```
+
+Train the random forest using a list of tuples ```D```. The latter type extends
+```IData<R>``` which enforces the presence of the function ```getResult() : R```.
+
+#### ```RandomForest.predict(D) : R```
+
+Predict the result ```R``` according to the data ```D```.
+
+#### ```RandomForest.importance() : List<ImmutablePair<String, Double>>```
+
+Get the list of features sorted by decreasing importance.
 
 ## Example
 

@@ -26,7 +26,8 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	/**
 	 * Init RF with all parameter
 	 *
-	 * @param p params
+	 * @param p
+	 *            params
 	 */
 	public RandomForest(Parameter p) {
 		LOG.debug("Initializing Random Forest : {}", p);
@@ -37,7 +38,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	}
 
 	/**
-	 * Create the model whit the learning set
+	 * Create the model with the learning set
 	 *
 	 * @param learningSet
 	 */
@@ -48,7 +49,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		this.bagging.getStream(learningSet).limit(p.getNbTrees()).forEach(sample -> {
 			// #2 Build all decision tree
 			DecisionTree<D, R> decisionTree = new DecisionTree<>(splitter, this.p);
-			// XXX
+			// (TODO) a bit ugly here
 			DataSet<D, R> ds = new DataSet<>(sample.get(0).getClass());
 			ds.setData(sample);
 			decisionTree.compute(ds);
@@ -90,6 +91,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 	 *
 	 * @return
 	 */
+	// (TODO) XXX immutable pair -> dedicated class for the results
 	public List<ImmutablePair<String, Double>> importance() {
 		HashMap<String, MutablePair<Integer, Double>> sums = new HashMap<>();
 		// #1 collect the impurity decreases
@@ -109,8 +111,7 @@ public class RandomForest<D extends IData<R>, R extends Comparable<R>> {
 		// #2 sort the collection
 		return sums.entrySet().stream()
 				.map(elt -> new ImmutablePair<>(elt.getKey(), elt.getValue().right / elt.getValue().left))
-				.sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-				.collect(Collectors.toList());
+				.sorted((a, b) -> b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
 	}
 
 }

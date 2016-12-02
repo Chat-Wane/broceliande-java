@@ -39,7 +39,7 @@ public class DataSet<D, R> {
 	/**
 	 * @return set of possible features (getters)
 	 */
-	public Set<Method> getP() {
+	public Set<Method> getFeatureGetters() {
 		return this.featureGetters;
 	}
 
@@ -53,7 +53,7 @@ public class DataSet<D, R> {
 	/**
 	 * @return the subset of node samples falling into node t
 	 */
-	public List<D> getL_t() {
+	public List<D> getSample() {
 		return data;
 	}
 
@@ -80,7 +80,7 @@ public class DataSet<D, R> {
 	public SubDataSets<D, R> split(Predicate<D> cut) {
 		List<D> left = new ArrayList<>();
 		List<D> right = new ArrayList<>();
-		getL_t().forEach(d -> {
+		getSample().forEach(d -> {
 			if (cut.test(d)) {
 				left.add(d);
 			} else {

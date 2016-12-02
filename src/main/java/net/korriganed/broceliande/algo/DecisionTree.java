@@ -46,7 +46,7 @@ public class DecisionTree<D, R> implements Iterable<Node<D, R>> {
 			// MaxDepth (d)
 			// or if it contains less than MinSamplesSplit samples (c)
 			if (n.getKey().getDepth() >= this.params.getMaxDepth()
-					|| n.getValue().getL_t().size() < this.params.getMinSamplesSplit()) {
+					|| n.getValue().getSample().size() < this.params.getMinSamplesSplit()) {
 				toLeaf(n);
 				continue;
 			}
@@ -70,8 +70,8 @@ public class DecisionTree<D, R> implements Iterable<Node<D, R>> {
 
 			// Set t as a terminal node if there is no split such that tL and
 			// tR both count a least MinSampleLeaf samples (f)
-			if (subDataSets.getLeft().getL_t().size() < this.params.getMinSampleLeaf()
-					|| subDataSets.getRight().getL_t().size() < this.params.getMinSampleLeaf()) {
+			if (subDataSets.getLeft().getSample().size() < this.params.getMinSampleLeaf()
+					|| subDataSets.getRight().getSample().size() < this.params.getMinSampleLeaf()) {
 				toLeaf(n);
 				continue;
 			}
@@ -83,8 +83,8 @@ public class DecisionTree<D, R> implements Iterable<Node<D, R>> {
 			nodeToCompute.add(new ImmutablePair<>(nRight, subDataSets.getRight()));
 			n.getKey().setRight(nRight);
 
-			LOG.trace("New Nodes: [{}][{}]", subDataSets.getLeft().getL_t().size(),
-					subDataSets.getRight().getL_t().size());
+			LOG.trace("New Nodes: [{}][{}]", subDataSets.getLeft().getSample().size(),
+					subDataSets.getRight().getSample().size());
 
 		}
 

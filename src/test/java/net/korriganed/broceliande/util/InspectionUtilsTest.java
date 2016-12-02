@@ -1,6 +1,6 @@
-package net.adrouet.broceliande.util;
+package net.korriganed.broceliande.util;
 
-import net.adrouet.broceliande.data.TestData;
+import net.korriganed.broceliande.data.TestData;
 import net.korriganed.broceliande.util.InspectionUtils;
 
 import org.junit.Test;

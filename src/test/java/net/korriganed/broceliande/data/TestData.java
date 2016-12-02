@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.data;
+package net.korriganed.broceliande.data;
 
 import net.korriganed.broceliande.data.Feature;
 import net.korriganed.broceliande.data.FeatureType;

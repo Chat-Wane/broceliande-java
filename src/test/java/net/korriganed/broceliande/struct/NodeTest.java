@@ -1,4 +1,4 @@
-package net.adrouet.broceliande.struct;
+package net.korriganed.broceliande.struct;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import net.adrouet.broceliande.data.TestData;
 import net.korriganed.broceliande.algo.BestSplit;
+import net.korriganed.broceliande.data.TestData;
 import net.korriganed.broceliande.struct.Node;
 
 public class NodeTest {

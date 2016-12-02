@@ -54,17 +54,22 @@ Constructor of the random forest.
 
 #### ```RandomForest.fit(List<D>)```
 
-Train the random forest using a list of tuples ```D```. The latter type extends
-```IData<R>``` which enforces the presence of the function ```getResult() : R```.
+Train the random forest using a list of tuples ```D```.
 
 This function only takes into account the getters of ```D``` that are annotated
 with a ```Feature``` which is either ```ORDERED``` or ```CATEGORICAL```.
+The getter of the target (or result) must be annotated by ```Target```.
 
 ```java
 // Annotation example
 @Feature(FeatureType.ORDERED)
   public Integer getAge() {
     return age;
+}
+
+@Target
+public Integer getSurvived() {
+  return survived;
 }
 ```
 

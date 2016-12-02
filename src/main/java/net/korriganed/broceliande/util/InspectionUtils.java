@@ -54,27 +54,9 @@ public abstract class InspectionUtils {
 
 	}
 
-	public static Comparable invokeGetter(Object target, Method m) {
+	public static <T> T invokeGetter(Object o, Method m) {
 		try {
-			return (Comparable) m.invoke(target);
-		} catch (IllegalAccessException e) {
-			LOG.error("Could not access method: {}", e.getMessage());
-			throw new RuntimeException("Could not access method", e);
-		} catch (InvocationTargetException e) {
-			LOG.error("Could not access method: {}", e.getTargetException().getMessage());
-			throw new RuntimeException("Target Exception", e.getTargetException());
-		}
-	}
-
-	public static Number invokeGetterForNumber(Object target, Method m) {
-		try {
-			Object o = m.invoke(target);
-			if (o instanceof Number) {
-				return (Number) o;
-			} else {
-				LOG.error("Can't cast result of {} to Number", m.getName());
-				throw new RuntimeException("Can't cast result of getter to Number");
-			}
+			return (T) m.invoke(o);
 		} catch (IllegalAccessException e) {
 			LOG.error("Could not access method: {}", e.getMessage());
 			throw new RuntimeException("Could not access method", e);

@@ -12,7 +12,7 @@ public class Node<D, R> {
 
 	private R result;
 
-	private BestSplit split;
+	private BestSplit<D> split;
 
 	private int depth = 0;
 

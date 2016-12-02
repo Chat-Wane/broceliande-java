@@ -1,7 +1,6 @@
 package net.korriganed.broceliande.algo;
 
 import static net.korriganed.broceliande.util.InspectionUtils.invokeGetter;
-import static net.korriganed.broceliande.util.InspectionUtils.invokeGetterForNumber;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,6 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,53 +88,85 @@ public class Splitter<D, R> {
 		// i(t): the impurity of node t
 		Double it = impurityG(occ_R.getOccurrences(), dataSet.getSample().size());
 
-		// #4 sort the sample L_t using the comparator on X_j returned values
-		Comparator<D> comparator = (x1, x2) -> invokeGetter(x1, featureGetter)
-				.compareTo(invokeGetter(x2, featureGetter));
-		Collections.sort(dataSet.getSample(), comparator);
-
-		// #5 loop over the sample of t
-		int i = 0; // /!\ starts at 1 in the algorithm of the thesis
 		List<D> sample = dataSet.getSample();
 		Integer sampleSize = sample.size();
-		while (i < sampleSize) {
-			while (((i + 1) < sampleSize) && (comparator.compare(sample.get(i), sample.get(i + 1)) == 0)) {
+		if (InspectionUtils.getFeatureType(featureGetter).equals(FeatureType.CATEGORICAL)) {
+			Stream<List<D>> sampleGroupByFeatureValue = sample.stream().map(data -> invokeGetter(data, featureGetter))
+					.distinct()
+					.map(featureValue -> sample.stream()
+							.filter(data -> invokeGetter(data, featureGetter).equals(featureValue))
+							.collect(Collectors.toList()));
+
+			BestSplit<D> bestSplit = sampleGroupByFeatureValue.map(group -> {
+				Occurrences<D, R> right = new Occurrences<>(dataSet);
+				dataSet.getSample().forEach(right::add);
+				Occurrences<D, R> left = new Occurrences<>(dataSet);
+				group.forEach(d -> {
+					right.remove(d);
+					left.add(d);
+				});
+				Double p_L = left.getTotal() / ((double) sample.size());
+				Double p_R = right.getTotal() / ((double) sample.size());
+				Double impurityDecrease = it - p_L * impurityG(left.getOccurrences(), left.getTotal())
+						- p_R * impurityG(right.getOccurrences(), right.getTotal());
+				D d = group.get(0);
+				Predicate<D> p = toCheck -> invokeGetter(toCheck, featureGetter).equals(invokeGetter(d, featureGetter));
+				BestSplit<D> split = new BestSplit<>(featureGetter, p, impurityDecrease);
+				return split;
+			}).max(Comparator.comparing(BestSplit::getImpurityDecrease)).get();
+
+			return bestSplit;
+		} else {
+			// #4 sort the sample L_t using the comparator on X_j returned
+			// values
+			Comparator<D> comparator = (x1, x2) -> InspectionUtils.<Comparable> invokeGetter(x1, featureGetter)
+					.compareTo(InspectionUtils.<Comparable> invokeGetter(x2, featureGetter));
+			Collections.sort(dataSet.getSample(), comparator);
+
+			// #5 loop over the sample of t
+			int i = 0; // /!\ starts at 1 in the algorithm of the thesis
+			while (i < sampleSize) {
+				while (((i + 1) < sampleSize) && (comparator.compare(sample.get(i), sample.get(i + 1)) == 0)) {
+					occ_L.add(sample.get(i));
+					occ_R.remove(sample.get(i));
+					++i;
+				}
 				occ_L.add(sample.get(i));
 				occ_R.remove(sample.get(i));
 				++i;
-			}
-			occ_L.add(sample.get(i));
-			occ_R.remove(sample.get(i));
-			++i;
-			if (i < sampleSize) {
-				// ∆i(s, t): the impurity decrease of split s at node t
-				// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
-				Double p_L = occ_L.getTotal() / ((double) sample.size());
-				Double p_R = occ_R.getTotal() / ((double) sample.size());
-				Double impurityDecrease = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
-						- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
+				if (i < sampleSize) {
+					// ∆i(s, t): the impurity decrease of split s at node t
+					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
+					Double p_L = occ_L.getTotal() / ((double) sample.size());
+					Double p_R = occ_R.getTotal() / ((double) sample.size());
+					Double impurityDecrease = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
+							- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
 
-				Predicate<D> p;
-				if (InspectionUtils.getFeatureType(featureGetter).equals(FeatureType.CATEGORICAL)) {
-					D d = sample.get(i);
-					p = data -> comparator.compare(data, d) == 0;
-					occ_R.addFrom(occ_L);
-					occ_L.reset();
-				} else {
-					// v'_k: the mid-cut point between v_k and v_k+1
-					Double midCutPoint = average(invokeGetterForNumber(sample.get(i), featureGetter),
-							invokeGetterForNumber(sample.get(i - 1), featureGetter));
-					p = data -> (invokeGetterForNumber(data, featureGetter)).doubleValue() < midCutPoint;
-				}
+					Predicate<D> p;
+					if (InspectionUtils.getFeatureType(featureGetter).equals(FeatureType.CATEGORICAL)) {
+						D d = sample.get(i);
+						p = data -> comparator.compare(data, d) == 0;
+						occ_R.addFrom(occ_L);
+						occ_L.reset();
+					} else {
+						// v'_k: the mid-cut point between v_k and v_k+1
+						Double midCutPoint = average(
+								InspectionUtils.<Number> invokeGetter(sample.get(i), featureGetter),
+								InspectionUtils.<Number> invokeGetter(sample.get(i - 1), featureGetter));
+						p = data -> (InspectionUtils.<Number> invokeGetter(data, featureGetter))
+								.doubleValue() < midCutPoint;
+					}
 
-				if (impurityDecrease > delta) {
-					delta = impurityDecrease;
-					bestSplitOfFeature = new BestSplit<>(featureGetter, p, impurityDecrease);
+					if (impurityDecrease > delta) {
+						delta = impurityDecrease;
+						bestSplitOfFeature = new BestSplit<>(featureGetter, p, impurityDecrease);
+					}
 				}
 			}
 		}
 
 		return bestSplitOfFeature;
+
 	}
 
 	private static Double average(Number a, Number b) {

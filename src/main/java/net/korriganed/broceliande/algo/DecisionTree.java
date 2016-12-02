@@ -39,7 +39,7 @@ public class DecisionTree<D, R> implements Iterable<Node<D, R>> {
 		nodeToCompute.add(new ImmutablePair<>(this.root, dataSet));
 
 		Pair<Node<D, R>, DataSet<D, R>> n;
-		BestSplit split;
+		BestSplit<D> split;
 		while (!nodeToCompute.isEmpty()) {
 			n = nodeToCompute.poll();
 			// Set t as a terminal node if its depth is greater or equal to

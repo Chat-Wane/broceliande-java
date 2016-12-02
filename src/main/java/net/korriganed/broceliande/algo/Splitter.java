@@ -35,12 +35,12 @@ public class Splitter<D, R> {
 		this.random = random;
 	}
 
-	public BestSplit findBestSplit(DataSet<D, R> dataSet) {
+	public BestSplit<D> findBestSplit(DataSet<D, R> dataSet) {
 		if (this.k == null) {
 			this.k = dataSet.getP().size();
 		}
 
-		BestSplit sstar = new BestSplit(null, null, 0.);
+		BestSplit<D> sstar = new BestSplit<>(null, null, 0.);
 		Double delta = Double.NEGATIVE_INFINITY;
 		ArrayList<Method> randomP = new ArrayList<>(dataSet.getP());
 		// #1 draw random getters from the features
@@ -50,7 +50,7 @@ public class Splitter<D, R> {
 		}
 		for (Method X_j : randomP) {
 			// #1 find the best binary split s*_j defined on X_j
-			BestSplit splitX_j = this.findBestSplit(dataSet, X_j);
+			BestSplit<D> splitX_j = this.findBestSplit(dataSet, X_j);
 			if (splitX_j.getImpurityDecrease() > delta) {
 				delta = splitX_j.getImpurityDecrease();
 				sstar = splitX_j;
@@ -69,19 +69,19 @@ public class Splitter<D, R> {
 	 * @param X_j
 	 *            the j-th input variable or feature (getter)
 	 */
-	public BestSplit findBestSplit(DataSet<D, R> dataSet, Method X_j) {
-		BestSplit vstar_j = new BestSplit(X_j, null, 0.);
+	public BestSplit<D> findBestSplit(DataSet<D, R> dataSet, Method X_j) {
+		BestSplit<D> vstar_j = new BestSplit<>(X_j, null, 0.);
 		Double delta = 0.;
 
 		// #1 initialize the statistics for t_R to i(t)
 		// t_R: the right child of node t
-		Occurrences<D, R> occ_R = new Occurrences<>(dataSet.getJ());
+		Occurrences<D, R> occ_R = new Occurrences<>(dataSet);
 		// #A fill the right node with all data
 		dataSet.getL_t().forEach(occ_R::add);
 
 		// #2 initialize the statistics for t_L to 0
 		// t_L: the left child of node t
-		Occurrences<D, R> occ_L = new Occurrences<>(dataSet.getJ());
+		Occurrences<D, R> occ_L = new Occurrences<>(dataSet);
 
 		// #3 initialize i(t)
 		// i(t): the impurity of node t
@@ -127,7 +127,7 @@ public class Splitter<D, R> {
 
 				if (delta_iOfv_kplus1 > delta) {
 					delta = delta_iOfv_kplus1;
-					vstar_j = new BestSplit(X_j, p, delta_iOfv_kplus1);
+					vstar_j = new BestSplit<>(X_j, p, delta_iOfv_kplus1);
 				}
 			}
 		}
@@ -167,11 +167,12 @@ public class Splitter<D, R> {
 		Double impurity = 0.;
 		for (D x : dataSet.getL_t()) {
 			// (TODO) XXX Ugly as hell
-			sum = sum + ((Number) InspectionUtils.invokeTarget(x)).doubleValue();
+			sum = sum + ((Number) InspectionUtils.invokeGetter(x, dataSet.getTargetGetter())).doubleValue();
 		}
 		Double average = sum / N_t.doubleValue();
 		for (D x : dataSet.getL_t()) {
-			impurity += Math.pow(((Number) InspectionUtils.invokeTarget(x)).doubleValue() - average, 2);
+			impurity += Math.pow(
+					((Number) InspectionUtils.invokeGetter(x, dataSet.getTargetGetter())).doubleValue() - average, 2);
 		}
 		impurity = impurity / N_t.doubleValue();
 		return impurity;

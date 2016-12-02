@@ -2,7 +2,6 @@ package net.korriganed.broceliande.struct;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import net.korriganed.broceliande.util.InspectionUtils;
 
@@ -10,11 +9,13 @@ public class Occurrences<D, R> {
 
 	private ArrayList<R> targets = new ArrayList<>();
 	private ArrayList<Integer> occurrences = new ArrayList<>();
+	private DataSet<D, R> dataSet;
 
 	private Integer total = 0;
 
-	public Occurrences(Set<R> ts) {
-		for (R t : ts) {
+	public Occurrences(DataSet<D, R> dataSet) {
+		this.dataSet = dataSet;
+		for (R t : dataSet.getJ()) {
 			this.targets.add(t);
 			this.occurrences.add(0);
 		}
@@ -22,7 +23,7 @@ public class Occurrences<D, R> {
 
 	public void add(D x) {
 		int i = 0;
-		R targetX = InspectionUtils.invokeTarget(x);
+		R targetX = (R) InspectionUtils.invokeGetter(x, this.dataSet.getTargetGetter());
 		for (R target : this.targets) {
 			if (target.equals(targetX)) {
 				this.occurrences.set(i, this.occurrences.get(i) + 1);
@@ -45,7 +46,7 @@ public class Occurrences<D, R> {
 
 	public void remove(D x) {
 		int i = 0;
-		R targetX = InspectionUtils.invokeTarget(x);
+		R targetX = (R) InspectionUtils.invokeGetter(x, this.dataSet.getTargetGetter());
 		for (R target : this.targets) {
 			if (target.equals(targetX)) {
 				this.occurrences.set(i, this.occurrences.get(i) - 1);

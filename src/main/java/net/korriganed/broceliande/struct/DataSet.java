@@ -14,15 +14,18 @@ import net.korriganed.broceliande.util.InspectionUtils;
 public class DataSet<D, R> {
 
 	private List<D> data;
-	private Set<Method> features;
+	private Set<Method> featureGetters;
 	private Set<R> targets;
+	private Method targetGetter;
 
 	public DataSet(Class<?> cl) {
-		this.features = InspectionUtils.findFeatures(cl);
+		this.featureGetters = InspectionUtils.findFeatures(cl);
+		this.targetGetter = InspectionUtils.findTarget(cl);
 	}
 
-	private DataSet(Set<Method> features, Set<R> targets) {
-		this.features = features;
+	private DataSet(Set<Method> featureGetters, Method targetGetter, Set<R> targets) {
+		this.featureGetters = featureGetters;
+		this.targetGetter = targetGetter;
 		this.targets = targets;
 	}
 
@@ -37,7 +40,14 @@ public class DataSet<D, R> {
 	 * @return set of possible features (getters)
 	 */
 	public Set<Method> getP() {
-		return this.features;
+		return this.featureGetters;
+	}
+
+	/**
+	 * 
+	 */
+	public Method getTargetGetter() {
+		return this.targetGetter;
 	}
 
 	/**
@@ -54,7 +64,7 @@ public class DataSet<D, R> {
 	 */
 	public void setData(List<D> data) {
 		if (this.targets == null) {
-			this.targets = data.stream().map(d -> (R) InspectionUtils.invokeTarget(d)).distinct()
+			this.targets = data.stream().map(d -> (R) InspectionUtils.invokeGetter(d, this.targetGetter)).distinct()
 					.collect(Collectors.toSet());
 		}
 		this.data = data;
@@ -78,17 +88,17 @@ public class DataSet<D, R> {
 			}
 		});
 
-		DataSet<D, R> leftDataSet = new DataSet<>(this.features, this.targets);
+		DataSet<D, R> leftDataSet = new DataSet<>(this.featureGetters, this.targetGetter, this.targets);
 		leftDataSet.setData(left);
-		DataSet<D, R> rightDataSet = new DataSet<>(this.features, this.targets);
+		DataSet<D, R> rightDataSet = new DataSet<>(this.featureGetters, this.targetGetter, this.targets);
 		rightDataSet.setData(right);
 		return new SubDataSets<>(leftDataSet, rightDataSet);
 
 	}
 
 	public R getDominantResult() {
-		Map<R, Long> count = data.stream()
-				.collect(Collectors.groupingBy(InspectionUtils::invokeTarget, Collectors.counting()));
+		Map<R, Long> count = data.stream().collect(Collectors
+				.groupingBy(d -> (R) InspectionUtils.invokeGetter(d, this.targetGetter), Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 

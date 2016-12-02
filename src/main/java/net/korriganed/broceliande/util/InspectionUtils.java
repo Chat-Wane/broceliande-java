@@ -66,19 +66,6 @@ public abstract class InspectionUtils {
 		}
 	}
 
-	public static <T> T invokeTarget(Object o) {
-		Method m = InspectionUtils.findTarget(o.getClass());
-		try {
-			return (T) m.invoke(o);
-		} catch (IllegalAccessException e) {
-			LOG.error("Could not access method: {}", e.getMessage());
-			throw new RuntimeException("Could not access method", e);
-		} catch (InvocationTargetException e) {
-			LOG.error("Could not access method: {}", e.getTargetException().getMessage());
-			throw new RuntimeException("Target Exception", e.getTargetException());
-		}
-	}
-
 	public static Number invokeGetterForNumber(Object target, Method m) {
 		try {
 			Object o = m.invoke(target);

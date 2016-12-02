@@ -13,27 +13,31 @@ import net.korriganed.broceliande.util.InspectionUtils;
 
 public class DataSet<D, R> {
 
-	private Class<?> dataClass;
 	private List<D> data;
-	private Set<Method> p;
+	private Set<Method> features;
+	private Set<R> targets;
 
 	public DataSet(Class<?> cl) {
-		this.p = InspectionUtils.findFeatures(cl);
-		this.dataClass = cl;
+		this.features = InspectionUtils.findFeatures(cl);
+	}
+
+	private DataSet(Set<Method> features, Set<R> targets) {
+		this.features = features;
+		this.targets = targets;
 	}
 
 	/**
 	 * @return set of possible results
 	 */
 	public Set<R> getJ() {
-		return data.stream().map(d -> (R) InspectionUtils.invokeTarget(d)).distinct().collect(Collectors.toSet());
+		return this.targets;
 	}
 
 	/**
 	 * @return set of possible features (getters)
 	 */
 	public Set<Method> getP() {
-		return p;
+		return this.features;
 	}
 
 	/**
@@ -49,6 +53,10 @@ public class DataSet<D, R> {
 	 * @param data
 	 */
 	public void setData(List<D> data) {
+		if (this.targets == null) {
+			this.targets = data.stream().map(d -> (R) InspectionUtils.invokeTarget(d)).distinct()
+					.collect(Collectors.toSet());
+		}
 		this.data = data;
 	}
 
@@ -70,9 +78,9 @@ public class DataSet<D, R> {
 			}
 		});
 
-		DataSet<D, R> leftDataSet = new DataSet<>(dataClass);
+		DataSet<D, R> leftDataSet = new DataSet<>(this.features, this.targets);
 		leftDataSet.setData(left);
-		DataSet<D, R> rightDataSet = new DataSet<>(dataClass);
+		DataSet<D, R> rightDataSet = new DataSet<>(this.features, this.targets);
 		rightDataSet.setData(right);
 		return new SubDataSets<>(leftDataSet, rightDataSet);
 

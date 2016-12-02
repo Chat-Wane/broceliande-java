@@ -105,7 +105,6 @@ public class Splitter<D, R> {
 			occ_R.remove(L_t.get(i));
 			++i;
 			if (i < N_t) {
-
 				// ∆i(s, t): the impurity decrease of split s at node t
 				// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
 				Double p_L = occ_L.getTotal() / ((double) L_t.size());
@@ -167,7 +166,7 @@ public class Splitter<D, R> {
 		Double sum = 0.;
 		Double impurity = 0.;
 		for (D x : dataSet.getL_t()) {
-			// (XXX) Ugly as hell
+			// (TODO) XXX Ugly as hell
 			sum = sum + ((Number) InspectionUtils.invokeTarget(x)).doubleValue();
 		}
 		Double average = sum / N_t.doubleValue();

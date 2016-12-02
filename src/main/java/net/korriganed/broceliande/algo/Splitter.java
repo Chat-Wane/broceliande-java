@@ -74,30 +74,24 @@ public class Splitter<D, R> {
 		BestSplit<D> bestSplitOfFeature = new BestSplit<>(featureGetter, null, 0.);
 		Double delta = 0.;
 
-		// #1 initialize the statistics for t_R to i(t)
-		// t_R: the right child of node t
 		Occurrences<D, R> occ_R = new Occurrences<>(dataSet);
-		// #A fill the right node with all data
 		dataSet.getSample().forEach(occ_R::add);
-
-		// #2 initialize the statistics for t_L to 0
-		// t_L: the left child of node t
 		Occurrences<D, R> occ_L = new Occurrences<>(dataSet);
 
-		// #3 initialize i(t)
-		// i(t): the impurity of node t
 		Double it = impurityG(occ_R.getOccurrences(), dataSet.getSample().size());
 
 		List<D> sample = dataSet.getSample();
 		Integer sampleSize = sample.size();
+
 		if (InspectionUtils.getFeatureType(featureGetter).equals(FeatureType.CATEGORICAL)) {
+			// #A CATEGORICAL FEATURE
 			Stream<List<D>> sampleGroupByFeatureValue = sample.stream().map(data -> invokeGetter(data, featureGetter))
 					.distinct()
 					.map(featureValue -> sample.stream()
 							.filter(data -> invokeGetter(data, featureGetter).equals(featureValue))
 							.collect(Collectors.toList()));
 
-			BestSplit<D> bestSplit = sampleGroupByFeatureValue.map(group -> {
+			bestSplitOfFeature = sampleGroupByFeatureValue.map(group -> {
 				Occurrences<D, R> right = new Occurrences<>(dataSet);
 				dataSet.getSample().forEach(right::add);
 				Occurrences<D, R> left = new Occurrences<>(dataSet);
@@ -113,18 +107,15 @@ public class Splitter<D, R> {
 				Predicate<D> p = toCheck -> invokeGetter(toCheck, featureGetter).equals(invokeGetter(d, featureGetter));
 				BestSplit<D> split = new BestSplit<>(featureGetter, p, impurityDecrease);
 				return split;
-			}).max(Comparator.comparing(BestSplit::getImpurityDecrease)).get();
-
-			return bestSplit;
+			}).max(Comparator.comparing(BestSplit::getImpurityDecrease)).orElse(bestSplitOfFeature);
 		} else {
-			// #4 sort the sample L_t using the comparator on X_j returned
-			// values
+			// #B ORDERED FEATURE
 			Comparator<D> comparator = (x1, x2) -> InspectionUtils.<Comparable> invokeGetter(x1, featureGetter)
 					.compareTo(InspectionUtils.<Comparable> invokeGetter(x2, featureGetter));
 			Collections.sort(dataSet.getSample(), comparator);
 
-			// #5 loop over the sample of t
-			int i = 0; // /!\ starts at 1 in the algorithm of the thesis
+			// #1 loop over the ordered sample
+			int i = 0;
 			while (i < sampleSize) {
 				while (((i + 1) < sampleSize) && (comparator.compare(sample.get(i), sample.get(i + 1)) == 0)) {
 					occ_L.add(sample.get(i));
@@ -142,20 +133,11 @@ public class Splitter<D, R> {
 					Double impurityDecrease = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
 							- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
 
-					Predicate<D> p;
-					if (InspectionUtils.getFeatureType(featureGetter).equals(FeatureType.CATEGORICAL)) {
-						D d = sample.get(i);
-						p = data -> comparator.compare(data, d) == 0;
-						occ_R.addFrom(occ_L);
-						occ_L.reset();
-					} else {
-						// v'_k: the mid-cut point between v_k and v_k+1
-						Double midCutPoint = average(
-								InspectionUtils.<Number> invokeGetter(sample.get(i), featureGetter),
-								InspectionUtils.<Number> invokeGetter(sample.get(i - 1), featureGetter));
-						p = data -> (InspectionUtils.<Number> invokeGetter(data, featureGetter))
-								.doubleValue() < midCutPoint;
-					}
+					// v'_k: the mid-cut point between the analyzed values
+					Double midCutPoint = average(InspectionUtils.<Number> invokeGetter(sample.get(i), featureGetter),
+							InspectionUtils.<Number> invokeGetter(sample.get(i - 1), featureGetter));
+					Predicate<D> p = data -> (InspectionUtils.<Number> invokeGetter(data, featureGetter))
+							.doubleValue() < midCutPoint;
 
 					if (impurityDecrease > delta) {
 						delta = impurityDecrease;
@@ -166,7 +148,6 @@ public class Splitter<D, R> {
 		}
 
 		return bestSplitOfFeature;
-
 	}
 
 	private static Double average(Number a, Number b) {

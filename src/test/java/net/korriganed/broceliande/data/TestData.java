@@ -1,9 +1,5 @@
 package net.korriganed.broceliande.data;
 
-import net.korriganed.broceliande.data.Feature;
-import net.korriganed.broceliande.data.FeatureType;
-import net.korriganed.broceliande.data.Target;
-
 public class TestData {
 
 	private String gender;
@@ -34,7 +30,7 @@ public class TestData {
 		this.age = age;
 	}
 
-	@Target
+	@Target(TargetType.DISCRETE)
 	public String isResult() {
 		return result;
 	}

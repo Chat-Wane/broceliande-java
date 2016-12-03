@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import net.korriganed.broceliande.data.Feature;
 import net.korriganed.broceliande.data.FeatureType;
 import net.korriganed.broceliande.data.Target;
+import net.korriganed.broceliande.data.TargetType;
 
 public abstract class InspectionUtils {
 
@@ -34,6 +35,11 @@ public abstract class InspectionUtils {
 
 	public static FeatureType getFeatureType(Method m) {
 		Feature annotation = m.getAnnotation(Feature.class);
+		return annotation.value();
+	}
+
+	public static TargetType getTargetType(Method m) {
+		Target annotation = m.getAnnotation(Target.class);
 		return annotation.value();
 	}
 

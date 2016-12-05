@@ -66,7 +66,7 @@ public class Node<D, R> {
 		this.result = result;
 	}
 
-	public void setSplit(BestSplit split) {
+	public void setSplit(BestSplit<D> split) {
 		this.split = split;
 	}
 

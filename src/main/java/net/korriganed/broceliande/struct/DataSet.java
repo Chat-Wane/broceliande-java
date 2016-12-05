@@ -64,7 +64,7 @@ public class DataSet<D, R> {
 	 */
 	public void setData(List<D> data) {
 		if (this.targets == null) {
-			this.targets = data.stream().map(d -> (R) InspectionUtils.invokeGetter(d, this.targetGetter)).distinct()
+			this.targets = data.stream().map(d -> InspectionUtils.<R>invokeGetter(d, this.targetGetter)).distinct()
 					.collect(Collectors.toSet());
 		}
 		this.data = data;
@@ -98,7 +98,7 @@ public class DataSet<D, R> {
 
 	public R getDominantResult() {
 		Map<R, Long> count = data.stream().collect(Collectors
-				.groupingBy(d -> (R) InspectionUtils.invokeGetter(d, this.targetGetter), Collectors.counting()));
+				.groupingBy(d -> InspectionUtils.<R>invokeGetter(d, this.targetGetter), Collectors.counting()));
 		return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
 

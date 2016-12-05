@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.korriganed.broceliande.data.FeatureType;
+import net.korriganed.broceliande.data.TargetType;
 import net.korriganed.broceliande.struct.DataSet;
 import net.korriganed.broceliande.struct.Occurrences;
 import net.korriganed.broceliande.util.InspectionUtils;
@@ -154,6 +155,17 @@ public class Splitter<D, R> {
 		return (a.doubleValue() + b.doubleValue()) / 2;
 	}
 
+	private static <D, R> Double impurity(List<Integer> subSampleSizes, Integer totalSampleSize,
+			DataSet<D, R> dataSet) {
+		Double result = 0.;
+		if (InspectionUtils.getTargetType(dataSet.getTargetGetter()).equals(TargetType.CONTINUOUS)) {
+			result = Splitter.impurityR(dataSet);
+		} else {
+			result = Splitter.impurityG(subSampleSizes, totalSampleSize);
+		}
+		return result;
+	}
+
 	/**
 	 * The impurity function iG(t) based on the Gini index
 	 *
@@ -176,7 +188,7 @@ public class Splitter<D, R> {
 	 *
 	 * @return
 	 */
-	private Double impurityR(DataSet<D, R> dataSet) {
+	private static <D, R> Double impurityR(DataSet<D, R> dataSet) {
 		Integer N_t = dataSet.getSample().size();
 		Double sum = 0.;
 		Double impurity = 0.;

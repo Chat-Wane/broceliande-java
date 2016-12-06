@@ -58,7 +58,8 @@ Train the random forest using a list of tuples ```D```.
 
 This function only takes into account the getters of ```D``` that are annotated
 with a ```Feature``` which is either ```ORDERED``` or ```CATEGORICAL```.
-The getter of the target (or result) must be annotated by ```Target```.
+The getter of the target (or result) must be annotated by ```Target``` with a
+type which is either ```CONTINUOUS``` or ```DISCRETE```.
 
 ```java
 // Annotation example
@@ -67,7 +68,7 @@ The getter of the target (or result) must be annotated by ```Target```.
     return age;
 }
 
-@Target
+@Target(TargetType.DISCRETE)
 public Integer getSurvived() {
   return survived;
 }

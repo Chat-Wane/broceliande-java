@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -79,7 +80,7 @@ public class Splitter<D, R> {
 		dataSet.getSample().forEach(occ_R::add);
 		Occurrences<D, R> occ_L = new Occurrences<>(dataSet);
 
-		Double it = impurityG(occ_R.getOccurrences(), dataSet.getSample().size());
+		Double it = impurity(occ_R);
 
 		List<D> sample = dataSet.getSample();
 		Integer sampleSize = sample.size();
@@ -102,8 +103,7 @@ public class Splitter<D, R> {
 				});
 				Double p_L = left.getTotal() / ((double) sample.size());
 				Double p_R = right.getTotal() / ((double) sample.size());
-				Double impurityDecrease = it - p_L * impurityG(left.getOccurrences(), left.getTotal())
-						- p_R * impurityG(right.getOccurrences(), right.getTotal());
+				Double impurityDecrease = it - p_L * impurity(left) - p_R * impurity(right);
 				D d = group.get(0);
 				Predicate<D> p = toCheck -> invokeGetter(toCheck, featureGetter).equals(invokeGetter(d, featureGetter));
 				BestSplit<D> split = new BestSplit<>(featureGetter, p, impurityDecrease);
@@ -131,8 +131,7 @@ public class Splitter<D, R> {
 					// ∆i(s, t) = i(t) - p_L i(t_L) - p_R i(t_R)
 					Double p_L = occ_L.getTotal() / ((double) sample.size());
 					Double p_R = occ_R.getTotal() / ((double) sample.size());
-					Double impurityDecrease = it - p_L * impurityG(occ_L.getOccurrences(), occ_L.getTotal())
-							- p_R * impurityG(occ_R.getOccurrences(), occ_R.getTotal());
+					Double impurityDecrease = it - p_L * impurity(occ_L) - p_R * impurity(occ_R);
 
 					// v'_k: the mid-cut point between the analyzed values
 					Double midCutPoint = average(InspectionUtils.<Number> invokeGetter(sample.get(i), featureGetter),
@@ -155,13 +154,12 @@ public class Splitter<D, R> {
 		return (a.doubleValue() + b.doubleValue()) / 2;
 	}
 
-	private static <D, R> Double impurity(List<Integer> subSampleSizes, Integer totalSampleSize,
-			DataSet<D, R> dataSet) {
+	private static <D, R> Double impurity(Occurrences<D, R> counts) {
 		Double result = 0.;
-		if (InspectionUtils.getTargetType(dataSet.getTargetGetter()).equals(TargetType.CONTINUOUS)) {
-			result = Splitter.impurityR(dataSet);
+		if (InspectionUtils.getTargetType(counts.getDataSet().getTargetGetter()).equals(TargetType.CONTINUOUS)) {
+			result = impurityR(counts);
 		} else {
-			result = Splitter.impurityG(subSampleSizes, totalSampleSize);
+			result = impurityG(counts);
 		}
 		return result;
 	}
@@ -173,12 +171,13 @@ public class Splitter<D, R> {
 	 * @param totalSampleSize
 	 * @return
 	 */
-	private static Double impurityG(List<Integer> subSampleSizes, Integer totalSampleSize) {
+	private static <D, R> Double impurityG(Occurrences<D, R> counts) {
 		Double impurity = 0.;
-		for (Integer subSampleSize : subSampleSizes) {
-			Double percentage = subSampleSize / (totalSampleSize.doubleValue());
-			impurity += percentage * (1 - percentage);
+		for (Entry<R, Integer> c : counts.getCounts().entrySet()) {
+			impurity += c.getValue() / counts.getTotal().doubleValue()
+					* (1 - c.getValue() / counts.getTotal().doubleValue());
 		}
+
 		return impurity;
 	}
 
@@ -188,20 +187,19 @@ public class Splitter<D, R> {
 	 *
 	 * @return
 	 */
-	private static <D, R> Double impurityR(DataSet<D, R> dataSet) {
-		Integer N_t = dataSet.getSample().size();
+	private static <D, R> Double impurityR(Occurrences<D, R> counts) {
 		Double sum = 0.;
+		for (Entry<R, Integer> c : counts.getCounts().entrySet()) {
+			sum += ((Number) c.getKey()).doubleValue() * c.getValue();
+		}
+		Double average = sum / counts.getTotal();
+
 		Double impurity = 0.;
-		for (D x : dataSet.getSample()) {
-			// (TODO) XXX Ugly as hell
-			sum = sum + ((Number) InspectionUtils.invokeGetter(x, dataSet.getTargetGetter())).doubleValue();
+		for (Entry<R, Integer> c : counts.getCounts().entrySet()) {
+			impurity += c.getValue() * Math.pow(((Number) c.getKey()).doubleValue() - average, 2);
 		}
-		Double average = sum / N_t.doubleValue();
-		for (D x : dataSet.getSample()) {
-			impurity += Math.pow(
-					((Number) InspectionUtils.invokeGetter(x, dataSet.getTargetGetter())).doubleValue() - average, 2);
-		}
-		impurity = impurity / N_t.doubleValue();
+		impurity = impurity / counts.getTotal();
+
 		return impurity;
 	}
 

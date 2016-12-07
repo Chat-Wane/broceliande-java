@@ -10,6 +10,7 @@
     <scm>
         <url>https://github.com/korriganed/broceliande</url>
         <connection>scm:git:ssh://git@github.com/korriganed/broceliande.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/korriganed/broceliande.git</developerConnection>
     </scm>
 
     <distributionManagement>

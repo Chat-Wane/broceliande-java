@@ -9,7 +9,8 @@
 
     <scm>
         <url>https://github.com/korriganed/broceliande</url>
-        <connection>scm:git@github.com:korriganed/broceliande.git</connection>
+        <connection>scm:git:ssh://git@github.com:korriganed/broceliande.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:korriganed/broceliande.git</developerConnection>
     </scm>
 
     <distributionManagement>
@@ -89,6 +90,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.9.5</version>
             </plugin>
         </plugins>
     </build>

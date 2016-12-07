@@ -9,7 +9,7 @@
 
     <scm>
         <url>https://github.com/korriganed/broceliande</url>
-        <connection>scm:git@github.com:korriganed/broceliande.git</connection>
+        <connection>scm:git@github.com/korriganed/broceliande.git</connection>
     </scm>
 
     <distributionManagement>
